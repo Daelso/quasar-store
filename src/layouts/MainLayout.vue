@@ -15,11 +15,11 @@
           <router-link to="/">SchreckNet</router-link>
         </q-toolbar-title>
 
-        <q-item v-if="!logInCheck" clickable>
+        <q-item v-if="!logInCheck" clickable style="align-items: center">
           <router-link to="/login">Login</router-link>
         </q-item>
 
-        <q-item v-if="!logInCheck" clickable>
+        <q-item v-if="!logInCheck" clickable style="align-items: center">
           <router-link to="/register">Register</router-link>
         </q-item>
 
@@ -67,7 +67,7 @@
       <router-link to="/privacy">Privacy</router-link> |
       <router-link to="/terms">Terms of Use</router-link> |
       <router-link to="/contact">Contact</router-link> |
-      <router-link to="/dark-pack">Dark Pack</router-link>
+      <router-link to="/faq">FAQ</router-link>
     </q-footer>
   </q-layout>
 </template>

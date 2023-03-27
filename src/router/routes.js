@@ -44,6 +44,11 @@ const routes = [
         component: () => import("pages/policy/termsOfUse.vue"),
       },
       {
+        name: "faq",
+        path: "faq",
+        component: () => import("pages/policy/faq.vue"),
+      },
+      {
         name: "contact",
         path: "contact",
         component: () => import("pages/policy/contact.vue"),
