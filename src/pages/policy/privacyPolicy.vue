@@ -225,7 +225,9 @@
               <br />
               <br />
               All user passwords are encrypted and hashed for our users
-              security.
+              security. The same goes for credit card information. In the event
+              of a leak, it would be nearly impossible for hackers to have
+              decrypt your information.
             </q-card-section>
           </q-card>
         </q-expansion-item>
@@ -254,6 +256,7 @@
 <style>
 .backgroundDefault {
   background-color: #171a1e;
+  color: white;
 }
 </style>
 

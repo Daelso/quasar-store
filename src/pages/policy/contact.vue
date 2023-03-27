@@ -1,6 +1,27 @@
 <template>
   <q-page class="flex flex-center">
     <div class="q-pa-md" style="max-width: 400px">
+      <header>We'll do our best to get back to you ASAP!</header>
+      <div>
+        <!-- <q-item
+          clickable
+          style="color: red"
+          href="https://discord.gg/CvUuaM84Ng"
+          target="_blank"
+        >
+          <q-item-section avatar>
+            <q-icon color="secondary" name="discord" style="scale: 120%" />
+          </q-item-section>
+
+          <q-item-section>
+            <q-item-label>SchreckNet Discord</q-item-label>
+            <q-item-label caption style="color: white"
+              >Meet your fellow kindred</q-item-label
+            >
+          </q-item-section>
+        </q-item> -->
+      </div>
+      <br />
       <q-form @submit="onSubmit" class="q-gutter-md">
         <q-input
           filled
@@ -19,13 +40,14 @@
           ]"
         />
         <q-select
-          color="teal"
+          color="secondary"
           filled
           bg-color="white"
           v-model="reason"
           :options="options"
           label="Subject"
           style="margin-bottom: 25px"
+          popup-content-style="background-color:#222831; color:white"
         >
           <template v-slot:prepend>
             <q-icon name="chat_bubble" />
@@ -93,7 +115,7 @@ export default defineComponent({
               color: "green-4",
               textColor: "white",
               icon: "cloud_done",
-              message: "Sent!",
+              message: "Message sent!",
             });
             router.push({ name: "home" });
           })
