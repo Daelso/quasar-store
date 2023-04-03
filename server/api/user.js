@@ -24,7 +24,9 @@ router.route("/users").get(async (req, res) => {
     .then((users) => {
       res.status(200).send(users);
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return;
+    });
 });
 
 //Below are various controller links
@@ -77,6 +79,7 @@ router.route("/login").post(lib.limiter, async (req, res) => {
         email: user.email,
         age: user.age,
         activated: user.activated,
+        is_admin: user.is_admin,
       };
       const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET, {
         expiresIn: "5m",
@@ -106,7 +109,6 @@ router.route("/login").post(lib.limiter, async (req, res) => {
       res.status(401).send("Incorrect email or password!");
     }
   } catch (err) {
-    console.log(err);
     res.status(500).send(err);
   }
 });
@@ -129,6 +131,7 @@ router.route("/token").post(async (req, res) => {
           age: user.age,
           id: user.id,
           activated: user.activated,
+          is_admin: user.is_admin,
         },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "5m" }
@@ -191,7 +194,6 @@ router.route("/passwordReset/:user/:token").post(async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
     await resetUser.update({ password: hashedPassword });
   } catch (err) {
-    console.log(err.message);
     return res.status(400).send(err.message);
   }
   res.sendStatus(200);
@@ -235,7 +237,6 @@ router.route("/activateAccount/:username/:token").post(async (req, res) => {
 
     await activationUser.update({ activated: 1 });
   } catch (err) {
-    console.log(err.message);
     return res.status(400).send(err.message);
   }
   res.clearCookie("access");

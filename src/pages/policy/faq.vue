@@ -20,6 +20,20 @@
         </q-expansion-item>
 
         <q-expansion-item
+          icon="design_services"
+          label="Where do we get our designs?"
+          caption="All designs are made in-house!"
+          dark
+        >
+          <q-card>
+            <q-card-section class="backgroundDefault">
+              We have a talented team of designers who hand-craft each of our
+              products.
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
+
+        <q-expansion-item
           icon="account_circle"
           label="Do I Need an Account to Order?"
           caption="No, but it helps speed things along and has some benefits."
@@ -44,7 +58,7 @@
         >
           <q-card>
             <q-card-section class="backgroundDefault">
-              We aim to for every order to arrive within 4-6 weeks following
+              We aim for every order to arrive within 4-6 weeks following
               processing. We hope to get the item to you even faster but wait
               times can vary depending on the volume of sales.
             </q-card-section>

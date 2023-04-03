@@ -87,7 +87,6 @@ export default {
                       })
                     )
                     .catch((err) => {
-                      console.log(err);
                       $q.notify({
                         color: "red-5",
                         textColor: "white",

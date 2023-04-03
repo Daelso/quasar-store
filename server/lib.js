@@ -9,6 +9,12 @@ const limiter = rateLimit({
   message: "Rate limit exceeded, please wait 15 minutes and try again!",
 });
 
+const postLimiter = rateLimit({
+  windowMs: 300000, //15 min
+  max: 20, //login attempts
+  message: "Rate limit exceeded, please wait 15 minutes and try again!",
+});
+
 const authenticateToken = (req, res, next) => {
   let token = req.cookies.access;
   if (token == null) {
@@ -28,6 +34,7 @@ const authenticateToken = (req, res, next) => {
               age: user.age,
               id: user.id,
               activated: user.activated,
+              is_admin: user.is_admin,
             },
             process.env.ACCESS_TOKEN_SECRET,
             { expiresIn: "5m" }
@@ -52,4 +59,56 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-module.exports = { authenticateToken, limiter };
+const getCurrentUser = (req, res) => {
+  let token = req.cookies.access;
+
+  if (token == null) {
+    const refreshToken = req.cookies.refresh;
+    if (refreshToken == null) {
+      return null;
+    } else {
+      jwt.verify(
+        refreshToken,
+        process.env.REFRESH_TOKEN_SECRET,
+        async (err, user) => {
+          if (err) {
+            req.currentUser = null;
+          }
+          token = jwt.sign(
+            {
+              username: user.username,
+              email: user.email,
+              id: user.id,
+              activated: user.activated,
+              is_admin: user.is_admin,
+            },
+            process.env.ACCESS_TOKEN_SECRET,
+            { expiresIn: "5m" }
+          );
+
+          const newCookie = await res.cookie("access", token, {
+            maxAge: 300000,
+            secure: true,
+            httpOnly: true,
+            sameSite: "None",
+          });
+          req.currentUser = user;
+        }
+      );
+    }
+  }
+
+  let currentUser = "";
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return res.send(err);
+    currentUser = user;
+  });
+  return currentUser;
+};
+
+module.exports = {
+  authenticateToken,
+  limiter,
+  getCurrentUser,
+  postLimiter,
+};
