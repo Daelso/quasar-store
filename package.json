@@ -2,7 +2,7 @@
   "name": "login-system",
   "version": "0.0.1",
   "description": "A template for vue-based user authentication",
-  "productName": "Login System",
+  "productName": "Quasar Shop",
   "author": "Chase Murtaugh <Chasemurtaugh@gmail.com>",
   "private": true,
   "scripts": {

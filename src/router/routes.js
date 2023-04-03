@@ -53,6 +53,16 @@ const routes = [
         path: "contact",
         component: () => import("pages/policy/contact.vue"),
       },
+      {
+        name: "manageDesigns",
+        path: "admin/designs",
+        component: () => import("src/pages/admin/manageDesigns.vue"),
+      },
+      {
+        name: "manageProducts",
+        path: "admin/products",
+        component: () => import("src/pages/admin/manageProducts.vue"),
+      },
     ],
   },
 

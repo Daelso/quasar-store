@@ -12,8 +12,14 @@
         />
 
         <q-toolbar-title style="font-family: TMUnicorn">
-          <router-link to="/">SchreckNet</router-link>
+          <router-link class="titleLogo" to="/">SchreckNet</router-link>
         </q-toolbar-title>
+
+        <q-item clickable>
+          <q-btn dense color="black" round icon="shopping_cart" class="q-ml-md">
+            <q-badge color="red" floating>0</q-badge>
+          </q-btn>
+        </q-item>
 
         <q-item v-if="!logInCheck" clickable style="align-items: center">
           <router-link to="/login">Login</router-link>
@@ -80,12 +86,17 @@ a:active {
   color: inherit;
   text-decoration: none;
 }
+
+@media only screen and (max-width: 600px) {
+  .titleLogo {
+    display: none;
+  }
+}
 </style>
 
 <script>
 import { defineComponent, ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
-import profileLinks from "components/profileLinks.vue";
 import ProfileLinks from "components/profileLinks.vue";
 
 const linksList = [
@@ -100,36 +111,6 @@ const linksList = [
     caption: "github.com/quasarframework",
     icon: "code",
     link: "https://github.com/quasarframework",
-  },
-  {
-    title: "Discord Chat Channel",
-    caption: "chat.quasar.dev",
-    icon: "chat",
-    link: "https://chat.quasar.dev",
-  },
-  {
-    title: "Forum",
-    caption: "forum.quasar.dev",
-    icon: "record_voice_over",
-    link: "https://forum.quasar.dev",
-  },
-  {
-    title: "Twitter",
-    caption: "@quasarframework",
-    icon: "rss_feed",
-    link: "https://twitter.quasar.dev",
-  },
-  {
-    title: "Facebook",
-    caption: "@QuasarFramework",
-    icon: "public",
-    link: "https://facebook.quasar.dev",
-  },
-  {
-    title: "Quasar Awesome",
-    caption: "Community Quasar projects",
-    icon: "favorite",
-    link: "https://awesome.quasar.dev",
   },
 ];
 

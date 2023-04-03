@@ -39,6 +39,9 @@ if (process.env.ENV !== "prod") {
 
 const userRoutes = require("./server/api/user");
 app.use("/user", userRoutes);
+
+const adminRoutes = require("./server/api/admin");
+app.use("/admin", adminRoutes);
 //Uses userRoutes file to handle all user related endpoints
 
 //Below are various controller links

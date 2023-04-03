@@ -184,12 +184,12 @@ const sendResetEmail = (target, username, resetLink) => {
 
     transporter.sendMail(mailOptions, function (err, succ) {
       if (err) {
-        console.log(err);
+        return;
       }
     });
     console.log("Email sent!");
   } catch (err) {
-    console.log(err);
+    return;
   }
 };
 
@@ -377,12 +377,12 @@ const sendActivationEmail = (target, username, activationLink) => {
 
     transporter.sendMail(mailOptions, function (err, succ) {
       if (err) {
-        console.log(err);
+        return;
       }
     });
     console.log("Email sent!");
   } catch (err) {
-    console.log(err);
+    return;
   }
 };
 
@@ -568,12 +568,12 @@ const sendContactForm = (content) => {
 
     transporter.sendMail(mailOptions, function (err, succ) {
       if (err) {
-        console.log(err);
+        return;
       }
     });
     console.log("Email sent!");
   } catch (err) {
-    console.log(err);
+    return;
   }
 };
 

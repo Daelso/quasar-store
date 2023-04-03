@@ -145,6 +145,20 @@
             </q-card-section>
           </q-card>
         </q-expansion-item>
+        <q-expansion-item
+          expand-separator
+          icon="shopping_cart"
+          label="Return Policy"
+          caption="All sales are final"
+          dark
+        >
+          <q-card>
+            <q-card-section class="backgroundDefault">
+              All sales are final, no refunds. If you receive a damaged product
+              please reach out to us and we will see what we can do.
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
       </q-list>
     </div>
   </q-page>

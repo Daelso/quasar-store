@@ -1,26 +1,24 @@
 const Sequelize = require("sequelize");
 const db = require("../database");
+const Users = require("./Users");
+const e = require("express");
 
-const Users = db.sequelize.define("users", {
-  user_id: {
+const Designs = db.sequelize.define("designs", {
+  design_id: {
     type: Sequelize.INTEGER,
     allowNull: false,
     primaryKey: true,
     autoIncrement: true,
   },
-  username: {
+  design_name: {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  email: {
+  design_desc: {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  password: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  terms_accepted: {
+  created_by: {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
@@ -32,15 +30,6 @@ const Users = db.sequelize.define("users", {
     type: Sequelize.DATE,
     allowNull: false,
   },
-  activated: {
-    type: Sequelize.INTEGER,
-    allowNull: true,
-  },
-  is_admin: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    defaultValue: false,
-  },
 });
 
-module.exports = Users;
+module.exports = Designs;
