@@ -10,7 +10,7 @@
     </q-item-section>
   </q-item>
 
-  <q-item clickable style="color: red" to="faq">
+  <q-item clickable style="color: red" @click="goToFaq">
     <q-item-section avatar>
       <q-icon color="secondary" name="quiz" />
     </q-item-section>
@@ -29,5 +29,10 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "EssentialLink",
+  methods: {
+    goToFaq() {
+      this.$router.push({ name: "faq" });
+    },
+  },
 });
 </script>
