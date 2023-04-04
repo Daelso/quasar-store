@@ -35,6 +35,27 @@ router.route("/design/:id").get(lib.authenticateToken, (req, res) => {
   res.status(200).json(req.currentUser);
 });
 
+router.route("/new").post(lib.authenticateToken, async (req, res) => {
+  if (!req.currentUser.is_admin) return res.sendStatus(401);
+  try {
+    const { name, desc, images } = req.body.newDesign;
+
+    await Designs.create({
+      design_name: name,
+      design_desc: desc,
+      design_images: images,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      created_by: req.currentUser.id,
+    });
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send("Error!");
+  }
+  res.status(200).json(req.currentUser);
+});
+//For uploading files
 router
   .route("/upload")
   .post([lib.authenticateToken, lib.postLimiter], (req, res) => {

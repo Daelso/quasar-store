@@ -1,23 +1,47 @@
 <template>
   <div class="q-pa-md">
-    <h4>Create a New Design</h4>
+    <h4 class="text-center">Create a New Design</h4>
 
     <div class="form-container">
       <q-input dark filled v-model="name" label="Design Name" />
       <q-input dark filled autogrow v-model="desc" label="Description" />
-      <q-uploader
-        :url="this.imageUploadUrl"
-        with-credentials
-        label="Upload Images"
+      <q-input
         dark
-        multiple
-        batch
-        accept=".jpg, image/*"
-        max-files="6"
-        @rejected="onRejected"
-        rounded
-        @uploaded="getids"
+        filled
+        v-model="image"
+        label="Direct Image Link"
+        hint="Use imgur or something similar, hit enter to submit. One link at a time."
+        v-on:keydown.enter="
+          (event) => {
+            event.preventDefault();
+
+            this.images.push(image);
+            this.image = '';
+          }
+        "
       />
+    </div>
+    <div v-if="this.images.length > 0" class="imageBox">
+      <q-btn
+        :disable="this.images.length < 1 || !this.name || !this.desc"
+        color="primary"
+        class="q-mt-md"
+        label="Create Design"
+        @click="this.createDesign"
+      />
+
+      <h4>Uploaded Images</h4>
+
+      <div class="imageContainer">
+        <div class="image" v-for="(link, key) in this.images" :key="key">
+          <q-img
+            :src="link"
+            alt="Sample image for demo"
+            spinner-color="white"
+            style="height: 340px; max-width: 350px"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -30,6 +54,23 @@
   border: 0.5px white solid;
   padding: 15px;
   border-radius: 15px;
+}
+.imageBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+}
+.imageContainer {
+  display: flex;
+  max-width: 1200px;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+}
+.image {
+  width: 350px;
 }
 </style>
 
@@ -65,21 +106,27 @@ export default {
       name: "",
       desc: "",
       images: [],
-      imageUploadUrl: this.baseUrl + "/designs/upload",
+      image: "",
     };
   },
   methods: {
-    onRejected(rejectedEntries) {
-      this.$q.notify({
-        type: "negative",
-        message: `${rejectedEntries.length} file(s) did not pass validation constraints`,
-      });
-    },
-    getids(event) {
-      event.files.forEach((file) => {
-        this.images.push(file.name);
-      });
-      console.log(this.images);
+    async createDesign() {
+      try {
+        const newDesign = {
+          name: this.name,
+          desc: this.desc,
+          images: this.images,
+        };
+        this.$axios.post(
+          this.baseUrl + "/designs/new",
+          { newDesign },
+          {
+            withCredentials: true,
+          }
+        );
+      } catch (err) {
+        console.log(err);
+      }
     },
   },
 };
