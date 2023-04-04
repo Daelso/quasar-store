@@ -35,36 +35,38 @@ router.route("/design/:id").get(lib.authenticateToken, (req, res) => {
   res.status(200).json(req.currentUser);
 });
 
-router.route("/upload").post(lib.authenticateToken, (req, res) => {
-  if (!req.currentUser.is_admin) return res.sendStatus(401);
-  const form = new formidable.IncomingForm({
-    multiples: true,
-    keepExtensions: true,
-    uploadDir: folder,
-  });
+router
+  .route("/upload")
+  .post([lib.authenticateToken, lib.postLimiter], (req, res) => {
+    if (!req.currentUser.is_admin) return res.sendStatus(401);
+    const form = new formidable.IncomingForm({
+      multiples: true,
+      keepExtensions: true,
+      uploadDir: folder,
+    });
 
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      console.log("Error parsing the files");
-      return res.status(400).json({
-        status: "Fail",
-        message: "There was an error parsing the files",
-        error: err,
-      });
-    }
-    for (const file in files) {
-      fs.rename(
-        files[file].filepath,
-        folder + "/" + files[file].originalFilename,
-        function (err) {
-          if (err) next(err);
-          res.end();
-        }
-      );
-    }
+    form.parse(req, async (err, fields, files) => {
+      if (err) {
+        console.log("Error parsing the files");
+        return res.status(400).json({
+          status: "Fail",
+          message: "There was an error parsing the files",
+          error: err,
+        });
+      }
+      for (const file in files) {
+        fs.rename(
+          files[file].filepath,
+          folder + "/" + files[file].originalFilename,
+          function (err) {
+            if (err) next(err);
+            res.end();
+          }
+        );
+      }
 
-    res.status(200).send("thanks");
+      res.status(200).send("thanks");
+    });
   });
-});
 
 module.exports = router; //Exports our routes

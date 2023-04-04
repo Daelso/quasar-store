@@ -11,7 +11,7 @@ const limiter = rateLimit({
 
 const postLimiter = rateLimit({
   windowMs: 300000, //15 min
-  max: 20, //login attempts
+  max: 50, //login attempts
   message: "Rate limit exceeded, please wait 15 minutes and try again!",
 });
 
