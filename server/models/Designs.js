@@ -1,7 +1,5 @@
 const Sequelize = require("sequelize");
 const db = require("../database");
-const Users = require("./Users");
-const e = require("express");
 
 const Designs = db.sequelize.define("designs", {
   design_id: {
@@ -29,6 +27,10 @@ const Designs = db.sequelize.define("designs", {
   updatedAt: {
     type: Sequelize.DATE,
     allowNull: false,
+  },
+  design_images: {
+    type: Sequelize.JSON,
+    allowNull: true,
   },
 });
 

@@ -47,6 +47,11 @@
 
         <EssentialLink />
       </q-list>
+      <q-list v-if="this.currentUser && this.currentUser.is_admin">
+        <q-item-label header> Admin Links </q-item-label>
+
+        <AdminLink />
+      </q-list>
     </q-drawer>
 
     <q-drawer
@@ -98,6 +103,7 @@ a:active {
 import { defineComponent, ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
 import ProfileLinks from "components/profileLinks.vue";
+import AdminLink from "src/components/AdminLink.vue";
 
 const linksList = [
   {
@@ -120,6 +126,7 @@ export default defineComponent({
   components: {
     EssentialLink,
     ProfileLinks,
+    AdminLink,
   },
 
   setup() {
