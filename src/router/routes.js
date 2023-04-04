@@ -63,6 +63,11 @@ const routes = [
         path: "admin/products",
         component: () => import("src/pages/admin/manageProducts.vue"),
       },
+      {
+        name: "newDesign",
+        path: "admin/designs/new",
+        component: () => import("src/pages/admin/createEditDesign.vue"),
+      },
     ],
   },
 
