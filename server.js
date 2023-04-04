@@ -42,6 +42,9 @@ app.use("/user", userRoutes);
 
 const adminRoutes = require("./server/api/admin");
 app.use("/admin", adminRoutes);
+
+const designRoutes = require("./server/api/designs");
+app.use("/designs", designRoutes);
 //Uses userRoutes file to handle all user related endpoints
 
 //Below are various controller links
