@@ -2,8 +2,12 @@
   <div class="q-pa-md fullContainer">
     <h3 class="title" style="font-family: TMUnicorn">
       {{ this.name }}
+      <q-icon class="editIcon" name="edit" @click="namePrompt = true" />
     </h3>
-    <div class="desc">{{ this.desc }}</div>
+    <div class="desc">
+      {{ this.desc }}
+      <q-icon class="editIcon" name="edit" @click="descPrompt = true" />
+    </div>
     <div class="images">
       <div
         class="image q-my-md"
@@ -86,6 +90,66 @@
       </q-card-actions>
     </q-card>
   </q-dialog>
+
+  <q-dialog v-model="descPrompt" persistent>
+    <q-card dark style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Edit Description</div>
+      </q-card-section>
+
+      <q-card-section dark class="q-pt-none">
+        <q-input
+          dark
+          dense
+          label="Desc Goes Here"
+          v-model="desc"
+          autofocus
+          autogrow
+        />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn color="secondary" flat label="Cancel" v-close-popup />
+        <q-btn
+          color="secondary"
+          flat
+          label="Edit Desc"
+          @click="updateDesign()"
+          v-close-popup
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog v-model="namePrompt" persistent>
+    <q-card dark style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Edit Name</div>
+      </q-card-section>
+
+      <q-card-section dark class="q-pt-none">
+        <q-input
+          dark
+          dense
+          label="Name Goes Here"
+          v-model="name"
+          autofocus
+          autogrow
+        />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn color="secondary" flat label="Cancel" v-close-popup />
+        <q-btn
+          color="secondary"
+          flat
+          label="Edit Name"
+          @click="updateDesign()"
+          v-close-popup
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <style scoped>
@@ -113,6 +177,10 @@
 
 .image {
   width: 350px;
+  cursor: pointer;
+}
+
+.editIcon {
   cursor: pointer;
 }
 
@@ -173,6 +241,8 @@ export default {
       curId: ref(id),
       newImg: ref(""),
       imgPrompt: ref(false),
+      descPrompt: ref(false),
+      namePrompt: ref(false),
     };
   },
   data() {
@@ -187,6 +257,7 @@ export default {
     addImage() {
       this.images.push(this.newImg);
       this.updateDesign();
+      this.newImg = "";
     },
 
     async updateDesign() {
