@@ -55,7 +55,4 @@ const Products = db.sequelize.define("products", {
   },
 });
 
-Products.belongsTo(Designs);
-Designs.hasMany(Products);
-
 module.exports = Products;

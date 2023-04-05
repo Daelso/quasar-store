@@ -45,6 +45,21 @@
           label="Add New Product"
           @click="productPrompt = true"
         />
+        <div class="q-pa-md">
+          <q-table
+            dark
+            style="width: 950px"
+            title="Products"
+            :rows="products"
+            :columns="columns"
+            row-key="name"
+            separator="cell"
+            :pagination="initialPagination"
+            rounded
+            no-data-label="No Associated Products"
+            @row-click="editProduct"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -167,6 +182,17 @@
       />
     </Suspense>
   </q-dialog>
+
+  <!-- Edit Product -->
+  <q-dialog v-model="editProductPrompt" persistent>
+    <Suspense>
+      <editProduct
+        v-model:closePrompt="editProductPrompt"
+        v-model:designId="id"
+        v-model:rowData="selectedRow"
+      />
+    </Suspense>
+  </q-dialog>
 </template>
 
 <style scoped>
@@ -222,9 +248,10 @@
 <script>
 import { ref } from "vue";
 import createProduct from "./createProduct.vue";
+import editProduct from "./editProduct.vue";
 
 export default {
-  components: { createProduct },
+  components: { createProduct, editProduct },
   async setup() {
     const axios = require("axios");
 
@@ -236,6 +263,7 @@ export default {
     }
     let isAdmin = null;
     let designData = null;
+    let products = null;
     const id = /[^/]*$/.exec(window.location.href)[0];
 
     try {
@@ -245,9 +273,11 @@ export default {
       designData = await axios.get(baseUrl + "/designs/design/" + id, {
         withCredentials: true,
       });
+      products = await axios.get(baseUrl + "/products/design/" + id);
     } catch (err) {
       router.push({ name: "login" });
     }
+    console.log(products.data);
     const { design_name, design_desc, design_images } = designData.data;
     return {
       isAdmin: ref(isAdmin),
@@ -263,11 +293,71 @@ export default {
       descPrompt: ref(false),
       namePrompt: ref(false),
       productPrompt: ref(false),
+      editProductPrompt: ref(false),
       id: ref(id),
+      products: ref(products.data),
+      initialPagination: {
+        sortBy: "desc",
+        descending: false,
+        page: 1,
+        rowsPerPage: 25,
+      },
     };
   },
   data() {
-    return {};
+    return {
+      selectedRow: "",
+      columns: [
+        {
+          name: "name",
+          required: true,
+          label: "Name",
+          align: "left",
+          field: "product_name",
+          format: (val) => `${val}`,
+          sortable: true,
+        },
+        {
+          name: "category",
+          align: "left",
+          label: "Style",
+          field: "category",
+          sortable: true,
+        },
+        {
+          name: "size",
+          align: "left",
+          label: "Size",
+          field: "size",
+          sortable: true,
+        },
+        {
+          name: "unit_price",
+          label: "Unit Price",
+          align: "left",
+
+          field: "unit_price",
+          format: (val) => "$" + val,
+        },
+        {
+          name: "sale_price",
+          label: "Sale Price",
+          align: "left",
+
+          field: "sale_price",
+          format: (val) => "$" + val,
+        },
+        {
+          name: "inventory",
+          align: "left",
+
+          label: "Inventory",
+          field: "inventory",
+          format: (val) => (val ? val : "Sold Out"),
+          sortable: true,
+        },
+      ],
+    };
   },
   methods: {
     deleteImage() {
@@ -298,6 +388,10 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+    editProduct(evt, row) {
+      this.selectedRow = row;
+      this.editProductPrompt = true;
     },
   },
 };
