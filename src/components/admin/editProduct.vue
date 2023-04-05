@@ -6,7 +6,7 @@
       @click="close"
     />
     <div class="form">
-      <h4>Create a New Product</h4>
+      <h4>Edit {{ this.name }}</h4>
       <div class="inputs">
         <q-input dark filled v-model="name" label="Product Name" />
         <q-input
@@ -33,7 +33,6 @@
           filled
           v-model="sizes"
           dark
-          multiple
           :options="sizeOptions"
           label="Sizes"
           option-label="size_name"
@@ -45,7 +44,6 @@
           class="q-my-md"
           v-model="colors"
           dark
-          multiple
           :options="colorOptions"
           label="Colors"
           option-label="color_name"
@@ -56,7 +54,7 @@
           dark
           filled
           v-model="inventory"
-          label="Starting Inventory Count"
+          label="Updated Inventory Count"
           type="number"
         />
         <q-input
@@ -81,9 +79,9 @@
         class="q-my-md"
         dark
         color="primary"
-        label="Create Product"
+        label="Edit Product"
         :disable="disableButton"
-        @click="createProduct"
+        @click="editProduct"
       />
     </div>
   </div>
@@ -109,8 +107,8 @@
 import { ref } from "vue";
 
 export default {
-  name: "productCreator",
-  props: ["closePrompt", "designId"],
+  name: "productEditor",
+  props: ["closePrompt", "designId", "rowData"],
   emits: ["update:closePrompt"],
   async setup() {
     const axios = require("axios");
@@ -133,36 +131,40 @@ export default {
       baseUrl: ref(baseUrl),
     };
   },
-  data(props) {
+  data() {
     return {
-      name: "",
-      desc: "",
-      closeThatPrompt: props.closePrompt,
-      category: "",
-      sizes: [],
-      colors: [],
-      unitPrice: "",
-      salesPrice: "",
-      inventory: "",
+      name: this.rowData.product_name,
+      desc: this.rowData.product_desc,
+      closeThatPrompt: this.closePrompt,
+      category: this.rowData.category,
+      sizes: this.rowData.size,
+      colors: this.rowData.color,
+      unitPrice: this.rowData.unit_price,
+      salesPrice: this.rowData.sale_price,
+      inventory: this.rowData.inventory,
     };
   },
   methods: {
-    async createProduct() {
+    async editProduct() {
       try {
-        const newProducts = {
+        const updateProduct = {
           name: this.name,
           desc: this.desc,
           category: this.category,
-          sizes: this.sizes,
-          colors: this.colors,
+          size: this.sizes,
+          color: this.colors,
           unitPrice: this.unitPrice,
           salesPrice: this.salesPrice,
           inventory: this.inventory,
           designId: this.designId,
         };
-        await this.$axios.post(this.baseUrl + "/products/new", newProducts, {
-          withCredentials: true,
-        });
+        await this.$axios.put(
+          this.baseUrl + "/products/edit/" + this.rowData.product_id,
+          updateProduct,
+          {
+            withCredentials: true,
+          }
+        );
       } catch (err) {
         console.log(err);
       }
