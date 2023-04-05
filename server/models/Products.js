@@ -37,7 +37,7 @@ const Products = db.sequelize.define("products", {
     type: Sequelize.DECIMAL,
     allowNull: false,
   },
-  sale_size: {
+  sale_price: {
     type: Sequelize.DECIMAL,
     allowNull: false,
   },

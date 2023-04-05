@@ -46,8 +46,17 @@ app.use("/admin", adminRoutes);
 const designRoutes = require("./server/api/designs");
 app.use("/designs", designRoutes);
 
+const productRoutes = require("./server/api/products");
+app.use("/products", productRoutes);
+
 const categoryRoutes = require("./server/api/categories");
 app.use("/categories", categoryRoutes);
+
+const sizeRoutes = require("./server/api/sizes");
+app.use("/sizes", sizeRoutes);
+
+const colorRoutes = require("./server/api/colors");
+app.use("/colors", colorRoutes);
 //Uses userRoutes file to handle all user related endpoints
 
 //Below are various controller links

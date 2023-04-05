@@ -161,7 +161,10 @@
 
   <q-dialog v-model="productPrompt" persistent>
     <Suspense>
-      <createProduct v-model:closePrompt="productPrompt" />
+      <createProduct
+        v-model:closePrompt="productPrompt"
+        v-model:designId="id"
+      />
     </Suspense>
   </q-dialog>
 </template>
@@ -260,6 +263,7 @@ export default {
       descPrompt: ref(false),
       namePrompt: ref(false),
       productPrompt: ref(false),
+      id: ref(id),
     };
   },
   data() {
