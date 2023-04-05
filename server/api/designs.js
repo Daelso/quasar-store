@@ -70,6 +70,7 @@ router.route("/new").post(lib.authenticateToken, async (req, res) => {
       createdAt: Date.now(),
       updatedAt: Date.now(),
       created_by: req.currentUser.id,
+      live: 0,
     });
   } catch (err) {
     console.log(err);

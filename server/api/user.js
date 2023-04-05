@@ -19,16 +19,6 @@ router.route("/currentUser").get(lib.authenticateToken, (req, res) => {
   res.json(req.currentUser);
 });
 
-router.route("/users").get(async (req, res) => {
-  Users.findAll()
-    .then((users) => {
-      res.status(200).send(users);
-    })
-    .catch((err) => {
-      return;
-    });
-});
-
 //Below are various controller links
 router.route("/register").post(async (req, res) => {
   try {

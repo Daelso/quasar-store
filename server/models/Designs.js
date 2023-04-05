@@ -32,6 +32,10 @@ const Designs = db.sequelize.define("designs", {
     type: Sequelize.JSON,
     allowNull: true,
   },
+  live: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
 });
 
 module.exports = Designs;
