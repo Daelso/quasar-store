@@ -64,11 +64,11 @@ router.route("/design/:id").get(lib.getLimiter, async (req, res) => {
     products.sale_price,
     products.inventory
 FROM   ${process.env.DB_NAME}.products AS products
-    INNER JOIN shop.categories AS categories
+    INNER JOIN ${process.env.DB_NAME}.categories AS categories
             ON products.product_category = categories.category_id
-    INNER JOIN shop.sizes AS sizes
+    INNER JOIN ${process.env.DB_NAME}.sizes AS sizes
             ON products.product_size = sizes.size_id
-    INNER JOIN shop.colors AS colors
+    INNER JOIN ${process.env.DB_NAME}.colors AS colors
             ON products.product_color = colors.color_id
 WHERE  parent_design = ${req.params.id};`,
       { type: QueryTypes.SELECT }

@@ -11,6 +11,9 @@ app.use(express.urlencoded({ extended: true }));
 const lib = require("../lib");
 const Designs = require("../models/Designs");
 const fs = require("fs");
+const { sequelize } = require("../database");
+const { QueryTypes } = require("sequelize");
+
 const folder = path.join(__dirname, "../../src/assets/designImages");
 
 if (!fs.existsSync(folder)) {
@@ -115,11 +118,20 @@ router
 
 router.route("/active").get(async (req, res) => {
   try {
-    const designs = await Designs.findAll({
-      where: {
-        live: true,
-      },
-    });
+    const designs = await sequelize.query(
+      `SELECT DISTINCT design_id,
+      design_name,
+      design_images,
+      Sum(products.inventory)  AS totalInventory,
+      Min(products.sale_price) AS low,
+      Max(products.sale_price) AS high
+FROM   ${process.env.DB_NAME}.designs AS designs
+INNER JOIN ${process.env.DB_NAME}.products AS products
+     ON products.parent_design = designs.design_id
+WHERE  live = 1
+GROUP  BY design_id;`,
+      { type: QueryTypes.SELECT }
+    );
     return res.status(200).json(designs);
   } catch (err) {
     return res.status(500);
