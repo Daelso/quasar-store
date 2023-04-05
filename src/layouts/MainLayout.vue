@@ -39,8 +39,8 @@
 
     <q-drawer
       v-model="leftDrawerOpen"
-      show-if-above
       style="background-color: #171a1e; border-color: red"
+      overlay
     >
       <q-list>
         <q-item-label header> Essential Links </q-item-label>
