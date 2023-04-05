@@ -1,24 +1,68 @@
 <template>
-  <div class="q-pa-md" style="max-width: 400px">
-    <q-btn
-      label="View Current User"
-      v-on:click="onSubmit()"
-      type="submit"
-      color="secondary"
-      text-color="primary"
-      style="font-weight: bold"
-    />
+  <div class="q-pa-md">
+    <div class="items-container">
+      <div class="item" v-for="(design, key) in designs" :key="key">
+        <q-img
+          :src="design.design_images[0]"
+          :alt="design.design_desc"
+          spinner-color="red"
+          @click="
+            () => {
+              selectedImage = key;
+
+              deleteImagePrompt = true;
+            }
+          "
+        />
+        <div class="caption">Fug</div>
+      </div>
+    </div>
   </div>
 </template>
 
+<style scoped>
+.items-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  max-width: 900px; /* or any other desired value */
+}
+
+.item {
+  width: 250px; /* or any other desired value */
+  height: 250px; /* or any other desired value */
+  margin: 10px; /* or any other desired value */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.15s ease-in-out;
+}
+
+.item:hover {
+  transform: scale(1.1); /* Zoom in by 10% on hover */
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 812px) {
+  .items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+}
+</style>
+
 <script>
-import { useQuasar } from "quasar";
 import { ref } from "vue";
 import nosImage from "../assets/images/Nosfer_logo.png";
 
 export default {
-  setup() {
-    const $q = useQuasar();
+  async setup() {
     const axios = require("axios");
     let currentUser = ref(false);
 
@@ -29,37 +73,33 @@ export default {
       baseUrl = window.location.origin;
     }
 
+    const designs = await axios.get(baseUrl + "/designs/active");
+
+    console.log(designs.data);
+
     return {
       currentUser,
+      baseUrl: ref(baseUrl),
       async onSubmit() {
-        let meme = await axios
+        await axios
           .get(baseUrl + "/user/currentUser", {
             withCredentials: true,
           })
           .then((resp) => {
             return resp.data;
           });
-        console.log(meme);
       },
+      designs: ref(designs.data),
     };
   },
   async mounted() {
-    const axios = require("axios");
-    const $q = useQuasar();
-
-    let baseUrl = "";
-    if (window.location.href.includes("localhost")) {
-      baseUrl = "http://localhost:5000";
-    } else {
-      baseUrl = window.location.origin;
-    }
-    this.currentUser = await axios
-      .get(baseUrl + "/user/currentUser", {
+    this.currentUser = await this.$axios
+      .get(this.baseUrl + "/user/currentUser", {
         withCredentials: true,
       })
       .then((resp) => {
         if (resp.data.activated != 1) {
-          $q.notify({
+          this.$q.notify({
             message:
               "Account not yet activated! It may be closed in 60 days if not made active.",
             color: "primary",

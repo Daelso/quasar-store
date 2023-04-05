@@ -1,6 +1,8 @@
 <template>
   <q-page class="flex flex-center">
-    <home-page />
+    <Suspense>
+      <home-page />
+    </Suspense>
   </q-page>
 </template>
 

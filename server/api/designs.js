@@ -113,4 +113,17 @@ router
     });
   });
 
+router.route("/active").get(async (req, res) => {
+  try {
+    const designs = await Designs.findAll({
+      where: {
+        live: true,
+      },
+    });
+    return res.status(200).json(designs);
+  } catch (err) {
+    return res.status(500);
+  }
+});
+
 module.exports = router; //Exports our routes
