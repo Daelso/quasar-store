@@ -179,6 +179,8 @@
       <createProduct
         v-model:closePrompt="productPrompt"
         v-model:designId="id"
+        v-model:products="products"
+        @update:close-prompt="updateData()"
       />
     </Suspense>
   </q-dialog>
@@ -190,6 +192,7 @@
         v-model:closePrompt="editProductPrompt"
         v-model:designId="id"
         v-model:rowData="selectedRow"
+        @update:close-prompt="updateData()"
       />
     </Suspense>
   </q-dialog>
@@ -277,7 +280,6 @@ export default {
     } catch (err) {
       router.push({ name: "login" });
     }
-    console.log(products.data);
     const { design_name, design_desc, design_images } = designData.data;
     return {
       isAdmin: ref(isAdmin),
@@ -392,6 +394,16 @@ export default {
     editProduct(evt, row) {
       this.selectedRow = row;
       this.editProductPrompt = true;
+    },
+    async updateData() {
+      try {
+        const updatedData = await this.$axios.get(
+          this.baseUrl + "/products/design/" + this.id
+        );
+        this.products = updatedData.data;
+      } catch (err) {
+        console.log(err);
+      }
     },
   },
 };
