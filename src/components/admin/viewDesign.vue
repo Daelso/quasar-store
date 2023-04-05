@@ -37,7 +37,15 @@
       @click="imgPrompt = true"
     />
     <div>
-      <h4 style="font-family: TMUnicorn">Associated Products</h4>
+      <div class="fullContainer">
+        <h4 style="font-family: TMUnicorn">Associated Products</h4>
+        <q-btn
+          class="q-mt-sm"
+          color="primary"
+          label="Add New Product"
+          @click="productPrompt = true"
+        />
+      </div>
     </div>
   </div>
 
@@ -150,6 +158,12 @@
       </q-card-actions>
     </q-card>
   </q-dialog>
+
+  <q-dialog v-model="productPrompt" persistent>
+    <Suspense>
+      <createProduct v-model:closePrompt="productPrompt" />
+    </Suspense>
+  </q-dialog>
 </template>
 
 <style scoped>
@@ -204,8 +218,10 @@
 
 <script>
 import { ref } from "vue";
+import createProduct from "./createProduct.vue";
 
 export default {
+  components: { createProduct },
   async setup() {
     const axios = require("axios");
 
@@ -243,6 +259,7 @@ export default {
       imgPrompt: ref(false),
       descPrompt: ref(false),
       namePrompt: ref(false),
+      productPrompt: ref(false),
     };
   },
   data() {
