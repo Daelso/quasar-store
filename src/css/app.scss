@@ -5,6 +5,24 @@
   src: url(./fonts/TMUnicorn.ttf);
 }
 
+@font-face {
+  font-family: BrokenConsole;
+  src: url(./fonts/broken-console-broken-console-regular-400.ttf);
+}
+
+@font-face {
+  font-family: Geiny;
+  src: url(./fonts/Geiny-Regular.ttf);
+}
+
 .nos-font {
   font-family: TMUnicorn;
+}
+
+.broken-console {
+  font-family: BrokenConsole;
+}
+
+.geiny-font {
+  font-family: Geiny;
 }

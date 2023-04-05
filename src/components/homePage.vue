@@ -14,7 +14,11 @@
             }
           "
         />
-        <div class="caption">Fug</div>
+        <div class="caption q-my-sm">{{ design.design_name }}</div>
+        <div class="price">from ${{ design.low }}</div>
+        <div v-if="design.totalInventory < 1" class="soldout q-my-sm">
+          SOLD OUT
+        </div>
       </div>
     </div>
   </div>
@@ -32,9 +36,27 @@
   max-width: 900px; /* or any other desired value */
 }
 
+.caption {
+  font-family: TMUnicorn;
+  font-size: large;
+}
+
+.price {
+  font-family: Geiny;
+  color: white;
+}
+
+.soldout {
+  border: 1px white solid;
+  padding: 5px;
+  font-family: BrokenConsole;
+  color: white;
+  border-radius: 5px;
+}
+
 .item {
   width: 250px; /* or any other desired value */
-  height: 250px; /* or any other desired value */
+  height: 350px; /* or any other desired value */
   margin: 10px; /* or any other desired value */
   display: flex;
   flex-direction: column;
@@ -53,6 +75,10 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
+  }
+  .item:active {
+    transform: scale(1.1); /* Zoom in by 10% on hover */
+    cursor: pointer;
   }
 }
 </style>
