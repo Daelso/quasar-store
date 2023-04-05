@@ -30,9 +30,32 @@ router.route("/all").get(lib.authenticateToken, async (req, res) => {
   }
 });
 
-router.route("/design/:id").get(lib.authenticateToken, (req, res) => {
+router.route("/design/:id").get(lib.authenticateToken, async (req, res) => {
   if (!req.currentUser.is_admin) return res.sendStatus(401);
-  res.status(200).json(req.currentUser);
+  try {
+    const design = await Designs.findByPk(req.params.id);
+    return res.status(200).json(design);
+  } catch (err) {
+    return res.sendStatus(500);
+  }
+});
+
+router.route("/design/:id").put(lib.authenticateToken, async (req, res) => {
+  if (!req.currentUser.is_admin) return res.sendStatus(401);
+  try {
+    const design = await Designs.findByPk(req.params.id);
+    const { name, desc, images } = req.body.updatedDesign;
+
+    design.update({
+      design_name: name,
+      design_desc: desc,
+      design_images: images,
+      updatedAt: Date.now(),
+    });
+    return res.status(200).json(design);
+  } catch (err) {
+    return res.sendStatus(500);
+  }
 });
 
 router.route("/new").post(lib.authenticateToken, async (req, res) => {
@@ -48,12 +71,11 @@ router.route("/new").post(lib.authenticateToken, async (req, res) => {
       updatedAt: Date.now(),
       created_by: req.currentUser.id,
     });
-    return;
   } catch (err) {
     console.log(err);
     return res.status(500).send("Error!");
   }
-  res.status(200).json(req.currentUser);
+  res.status(200).send("Design created!");
 });
 //For uploading files
 router
