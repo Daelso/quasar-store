@@ -1,10 +1,12 @@
 <template>
-  <div class="q-pa-md designTable">
+  <div class="q-pa-lg designTable">
     <q-table
       flat
       bordered
       dark
       grid
+      card-container-class="justify-center q-pa-xl"
+      card-container-style="min-width:900px;"
       title="Designs"
       :rows="rows"
       :columns="columns"
@@ -12,7 +14,7 @@
       :filter="filter"
       hide-header
       :pagination="initialPagination"
-      @row-click="goToDesign()"
+      @row-click="goToDesign"
     >
       <template v-slot:top-right>
         <q-input
@@ -35,11 +37,7 @@
   </div>
 </template>
 
-<style scoped>
-.designTable {
-  width: 900px;
-}
-</style>
+<style scoped></style>
 
 <script>
 import { ref } from "vue";
@@ -67,7 +65,6 @@ export default {
       withCredentials: true,
     });
 
-    console.log(rows.data);
     return {
       isAdmin: ref(isAdmin),
       rows: ref(rows.data),
@@ -118,8 +115,11 @@ export default {
     addDesign() {
       this.$router.push({ name: "newDesign" });
     },
-    goToDesign() {
-      this.$router.push({ name: "design", params: { id: 1 } });
+    goToDesign(evt, row) {
+      this.$router.push({
+        name: "manageDesign",
+        params: { id: row.design_id },
+      });
     },
   },
 };

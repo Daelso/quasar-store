@@ -117,13 +117,14 @@ export default {
           desc: this.desc,
           images: this.images,
         };
-        this.$axios.post(
+        await this.$axios.post(
           this.baseUrl + "/designs/new",
           { newDesign },
           {
             withCredentials: true,
           }
         );
+        this.$router.go({ name: "manageDesigns" });
       } catch (err) {
         console.log(err);
       }
