@@ -141,12 +141,14 @@ GROUP  BY design_id;`,
 router.route("/viewProduct/:id").get(async (req, res) => {
   try {
     const designs = await sequelize.query(
-      `SELECT DISTINCT design_id, design_desc, design_name, design_images, category.desc as styles, category.category_id  FROM ${process.env.DB_NAME}.designs
+      `SELECT DISTINCT design_id, design_desc, design_name, design_images, category.desc as styles, category.category_id, sum(inventory)as inventory FROM ${process.env.DB_NAME}.designs
 
       INNER JOIN ${process.env.DB_NAME}.products as products ON products.parent_design = design_id
       INNER JOIN ${process.env.DB_NAME}.categories as category ON category.category_id = products.product_category
 
-      WHERE design_id = ${req.params.id};`,
+      WHERE design_id = ${req.params.id}
+
+      GROUP BY design_id, design_desc, design_name, design_images, category.category_id, category.desc;`,
       { type: QueryTypes.SELECT }
     );
     return res.status(200).json(designs);
