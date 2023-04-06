@@ -126,7 +126,7 @@ router
   });
 
 router
-  .route("/getColorBySize/:design_id/:size_id")
+  .route("/getColorBySize/:design_id/:size_id/:style_id")
   .get(lib.getLimiter, async (req, res) => {
     try {
       const products = await sequelize.query(
@@ -134,7 +134,7 @@ router
 
       INNER JOIN ${process.env.DB_NAME}.colors as colors ON colors.color_id = product_color
 
-      WHERE parent_design = ${req.params.design_id} AND product_size = ${req.params.size_id};`,
+      WHERE parent_design = ${req.params.design_id} AND product_size = ${req.params.size_id} AND product_category = ${req.params.style_id};`,
         { type: QueryTypes.SELECT }
       );
 

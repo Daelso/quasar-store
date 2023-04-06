@@ -12,7 +12,11 @@
       <div class="desc">{{ this.productInfo[0].design_desc }}</div>
     </div>
     <div class="input-area">
+      <div class="broken-console" v-if="this.styleOptions.length < 1">
+        SOLD OUT
+      </div>
       <q-select
+        v-if="this.styleOptions.length > 0"
         dark
         filled
         v-model="style"
@@ -156,6 +160,7 @@ export default {
       baseUrl + "/designs/viewProduct/" + designId
     );
 
+    console.log(productInfo.data);
     return {
       baseUrl: ref(baseUrl),
       designId: ref(designId),
@@ -195,7 +200,7 @@ export default {
 
       const arr = await this.$axios.get(
         this.baseUrl +
-          `/products/getColorBySize/${this.designId}/${this.size.product_size}`
+          `/products/getColorBySize/${this.designId}/${this.size.product_size}/${this.style.style_id}`
       );
       this.colorOptions = arr.data;
     },
@@ -214,6 +219,7 @@ export default {
       const arr = [];
 
       this.productInfo.forEach((product) => {
+        if (product.inventory == 0) return;
         const styleObj = {
           style: product.styles,
           style_id: product.category_id,
