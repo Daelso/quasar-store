@@ -16,8 +16,8 @@ const postLimiter = rateLimit({
 });
 
 const getLimiter = rateLimit({
-  windowMs: 150000, //7 min
-  max: 250, //attempts
+  windowMs: 150000, //7.5 min
+  max: 500, //attempts
   message: "Rate limit exceeded, please wait a few minutes and try again!",
 });
 

@@ -73,6 +73,11 @@ const routes = [
         path: "admin/designs/:id",
         component: () => import("src/pages/admin/viewDesign.vue"),
       },
+      {
+        name: "viewProduct",
+        path: "designs/:id",
+        component: () => import("src/pages/product/productPage.vue"),
+      },
     ],
   },
 

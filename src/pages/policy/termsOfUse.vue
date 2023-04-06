@@ -73,10 +73,10 @@
           <q-card>
             <q-card-section class="backgroundDefault">
               We respect the intellectual property of others and ask that users
-              of our Site do the same. The basis of our site is rooted in the
-              World of Darkness which firmly belongs to Paradox Interactive. We
-              offer no challenge to this and adhere strictly the Dark Pack
-              licensing agreement.
+              of our site do the same. The basis of our site is rooted in the
+              love of video-games and other artistic forms of media. We offer no
+              challenge to anyone's license, copyright or trademarks. We will
+              promptly rectify and act on any notice of infringment.
             </q-card-section>
           </q-card>
         </q-expansion-item>
