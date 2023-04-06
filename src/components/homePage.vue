@@ -1,18 +1,16 @@
 <template>
   <div class="q-pa-md">
     <div class="items-container">
-      <div class="item" v-for="(design, key) in designs" :key="key">
+      <div
+        class="item"
+        v-for="(design, key) in designs"
+        :key="key"
+        @click="goToDesign(design.design_id)"
+      >
         <q-img
           :src="design.design_images[0]"
           :alt="design.design_desc"
           spinner-color="red"
-          @click="
-            () => {
-              selectedImage = key;
-
-              deleteImagePrompt = true;
-            }
-          "
         />
         <div class="caption q-my-sm">{{ design.design_name }}</div>
         <div class="price">from ${{ design.low }}</div>
@@ -102,7 +100,6 @@ export default {
     const designs = await axios.get(baseUrl + "/designs/active");
 
     console.log(designs.data);
-
     return {
       currentUser,
       baseUrl: ref(baseUrl),
@@ -172,5 +169,11 @@ export default {
         return resp.data;
       });
   },
+  methods: {
+    goToDesign(id) {
+      this.$router.push({ name: "viewProduct", params: { id } });
+    },
+  },
+  computed: {},
 };
 </script>

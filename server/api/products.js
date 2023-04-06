@@ -104,4 +104,61 @@ router.route("/edit/:id").put(lib.authenticateToken, async (req, res) => {
   }
 });
 
+router
+  .route("/getSizeByStyle/:design_id/:style_id")
+  .get(lib.getLimiter, async (req, res) => {
+    try {
+      const products = await sequelize.query(
+        `SELECT DISTINCT product_size, size_name FROM ${process.env.DB_NAME}.products
+
+      INNER JOIN ${process.env.DB_NAME}.sizes as sizes ON sizes.size_id = product_size
+
+      WHERE parent_design = ${req.params.design_id} AND product_category = ${req.params.style_id}
+      ORDER BY size_name desc
+      ;`,
+        { type: QueryTypes.SELECT }
+      );
+
+      return res.status(200).json(products);
+    } catch (err) {
+      return res.status(500);
+    }
+  });
+
+router
+  .route("/getColorBySize/:design_id/:size_id")
+  .get(lib.getLimiter, async (req, res) => {
+    try {
+      const products = await sequelize.query(
+        `SELECT DISTINCT product_color, color_name FROM ${process.env.DB_NAME}.products
+
+      INNER JOIN ${process.env.DB_NAME}.colors as colors ON colors.color_id = product_color
+
+      WHERE parent_design = ${req.params.design_id} AND product_size = ${req.params.size_id};`,
+        { type: QueryTypes.SELECT }
+      );
+
+      return res.status(200).json(products);
+    } catch (err) {
+      return res.status(500);
+    }
+  });
+
+router
+  .route("/getFinalProduct/:design_id/:style_id/:size_id/:color_id")
+  .get(lib.getLimiter, async (req, res) => {
+    try {
+      const product = await sequelize.query(
+        `SELECT * FROM ${process.env.DB_NAME}.products
+
+        WHERE parent_design = ${req.params.design_id} AND product_size = ${req.params.size_id} AND product_color = ${req.params.color_id} AND product_category = ${req.params.style_id};`,
+        { type: QueryTypes.SELECT }
+      );
+
+      return res.status(200).json(product);
+    } catch (err) {
+      return res.status(500);
+    }
+  });
+
 module.exports = router; //Exports our routes
