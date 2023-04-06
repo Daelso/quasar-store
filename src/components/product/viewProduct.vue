@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <div class="text-area">
       <h3 class="nos-font">{{ this.productInfo[0].design_name }}</h3>
-      <div class="price">
+      <div class="price text-center">
         {{
           this.finalProduct
             ? "$" + this.finalProduct.sale_price
@@ -99,6 +99,11 @@
   gap: 15px;
 }
 
+.price {
+  margin-bottom: 15px;
+  justify-content: center;
+}
+
 .desc {
   width: 300px;
   align-items: end;
@@ -127,6 +132,8 @@
   }
   .price {
     margin-bottom: 15px;
+    width: 15rem;
+    justify-content: center;
   }
   .input-area {
     gap: 25px;

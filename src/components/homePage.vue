@@ -14,7 +14,7 @@
         />
         <div class="caption q-my-sm">{{ design.design_name }}</div>
         <div class="price">from ${{ design.low }}</div>
-        <div v-if="design.totalInventory < 1" class="soldout q-my-sm">
+        <div v-if="design.totalInventory < 1" class="broken-console q-my-sm">
           SOLD OUT
         </div>
       </div>
@@ -42,14 +42,6 @@
 .price {
   font-family: Geiny;
   color: white;
-}
-
-.soldout {
-  border: 1px white solid;
-  padding: 5px;
-  font-family: BrokenConsole;
-  color: white;
-  border-radius: 5px;
 }
 
 .item {
