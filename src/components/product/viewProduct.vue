@@ -59,7 +59,7 @@
         class="item q-my-md"
         :src="url"
         spinner-color="red"
-        style="width: 300px"
+        style="width: 400px"
       />
       <div class="allpics" v-if="this.productInfo[0].design_images.length > 1">
         <q-img
@@ -83,6 +83,11 @@
   align-content: center;
   flex-direction: column;
   flex-wrap: wrap;
+}
+.allpics {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .text-area {
   display: flex;
@@ -210,6 +215,11 @@ export default {
           `/products/getColorBySize/${this.designId}/${this.size.product_size}/${this.style.style_id}`
       );
       this.colorOptions = arr.data;
+
+      if (this.colorOptions.length === 1) {
+        this.color = this.colorOptions[0];
+        this.getProduct();
+      }
     },
     async getProduct() {
       const arr = await this.$axios.get(
