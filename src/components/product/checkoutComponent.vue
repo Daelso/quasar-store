@@ -1,71 +1,5 @@
 <template>
-  <div class="q-pa-md cart-container">
-    <q-table
-      title="Current Cart"
-      :rows="shoppingCart"
-      :columns="columns"
-      bordered
-      row-key="name"
-      dark
-      :title-class="{ 'text-h4 text-white': this.mobile }"
-      :grid="this.mobile"
-      class="desktop"
-      card-container-class="cart-table"
-      card-class="card"
-      @row-click="removeItemPromptFunc"
-    >
-      <template v-slot:no-data>
-        <q-tr class="empty" @click="goHome()">
-          <q-td colspan="100%">
-            The cart is empty! Check out our catalog.
-          </q-td>
-        </q-tr>
-      </template>
-
-      <template v-slot:bottom>
-        <q-tr>
-          <q-td class="total-price" colspan="100%">
-            Total Price: ${{ getTotalPrice }}
-          </q-td>
-        </q-tr>
-      </template>
-    </q-table>
-    <div class="btn-container">
-      <div
-        v-if="this.shoppingCart"
-        class="text-center cont-shop q-mt-sm"
-        @click="goHome"
-      >
-        Continue Shopping
-      </div>
-      <div @click="goToCheckout()" class="checkout text-center broken-console">
-        Checkout
-      </div>
-    </div>
-  </div>
-
-  <!-- Dialogues -->
-
-  <q-dialog v-model="removeItemPrompt" persistent>
-    <q-card dark>
-      <q-card-section class="row items-center">
-        <span class="q-ml-sm"
-          >Remove {{ this.selectedRow.product_name }} from your cart?</span
-        >
-      </q-card-section>
-
-      <q-card-actions align="right">
-        <q-btn flat label="Cancel" color="secondary" v-close-popup />
-        <q-btn
-          flat
-          label="Remove"
-          color="secondary"
-          @click="removeItem()"
-          v-close-popup
-        />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
+  <div class="q-pa-md cart-container"></div>
 </template>
 
 <style scoped>
@@ -231,7 +165,7 @@ export default {
       localStorage.setItem("cart", JSON.stringify(localStorageCart));
     },
     goToCheckout() {
-      this.$router.push({ name: "checkoutComponent" });
+      this.$router.push({ name: "checkout" });
     },
   },
   computed: {
