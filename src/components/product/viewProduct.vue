@@ -52,6 +52,13 @@
         style="width: 150px"
         @update:model-value="getProduct()"
       />
+      <q-btn
+        v-if="this.finalProduct"
+        outline
+        color="secondary"
+        label="Add to Cart"
+        @click="addToCart()"
+      />
     </div>
 
     <div class="pics">
@@ -102,6 +109,7 @@
   align-items: flex-end;
   width: 1000px;
   gap: 15px;
+  position: absolute;
 }
 
 .price {
@@ -152,6 +160,7 @@
 
 <script>
 import { ref } from "vue";
+import nosImage from "../../assets/images/Nosfer_logo.png";
 
 export default {
   name: "viewProduct",
@@ -228,6 +237,42 @@ export default {
       );
       this.finalProduct = arr.data[0];
       console.log(this.finalProduct);
+    },
+    addToCart() {
+      let cart = JSON.parse(localStorage.getItem("cart"));
+      if (cart === null) {
+        cart = [];
+      }
+      if (!this.maxQuantityCheck(cart, this.finalProduct.product_id)) {
+        this.$q.notify({
+          color: "red-5",
+          textColor: "white",
+          icon: "warning",
+          message: `Maximum of 2 of the same kind of items per cart!`,
+        });
+        return;
+      }
+      cart.push(this.finalProduct.product_id);
+      localStorage.setItem("cart", JSON.stringify(cart));
+
+      this.$q.notify({
+        message: `${this.productInfo[0].design_name} - ${this.style.style} (${this.size.size_name} - ${this.color.color_name}) added to cart!`,
+        color: "primary",
+        avatar: nosImage,
+        timeout: 9000,
+      });
+    },
+
+    maxQuantityCheck(cart, newItem) {
+      const dupeCount = {};
+      cart.forEach((x) => {
+        dupeCount[x] = (dupeCount[x] || 0) + 1;
+      });
+
+      if (dupeCount[newItem] >= 2) {
+        return false;
+      }
+      return true;
     },
   },
 
