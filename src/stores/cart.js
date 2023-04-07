@@ -18,5 +18,8 @@ export const useCounterStore = defineStore("counter", {
     clear() {
       this.counter = 0;
     },
+    cartSize(length) {
+      this.counter = length;
+    },
   },
 });

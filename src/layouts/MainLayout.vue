@@ -168,10 +168,8 @@ export default defineComponent({
 
     //handling in case of refresh
     if (this.store.counter === 0) {
-      let cart = JSON.parse(localStorage.getItem("cart"));
-      cart.forEach((item) => {
-        this.store.increment();
-      });
+      const cart = JSON.parse(localStorage.getItem("cart"));
+      this.store.cartSize(cart.length);
     }
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {
