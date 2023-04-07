@@ -16,7 +16,7 @@
         </q-toolbar-title>
 
         <q-item clickable>
-          <q-btn dense color="black" round icon="shopping_cart" class="q-ml-md">
+          <q-btn dense color="black" round icon="shopping_cart">
             <q-badge color="red" floating>{{ this.store.counter }}</q-badge>
           </q-btn>
         </q-item>
