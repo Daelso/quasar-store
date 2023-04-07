@@ -109,11 +109,12 @@ router
   .get(lib.getLimiter, async (req, res) => {
     try {
       const products = await sequelize.query(
-        `SELECT DISTINCT product_size, size_name FROM ${process.env.DB_NAME}.products
+        `SELECT DISTINCT product_size, size_name, sum(inventory) as inventory FROM ${process.env.DB_NAME}.products
 
       INNER JOIN ${process.env.DB_NAME}.sizes as sizes ON sizes.size_id = product_size
 
-      WHERE parent_design = ${req.params.design_id} AND product_category = ${req.params.style_id}
+      WHERE parent_design = ${req.params.design_id} AND product_category = ${req.params.style_id} AND inventory > 0
+      GROUP BY product_size, size_name
       ORDER BY size_name desc
       ;`,
         { type: QueryTypes.SELECT }
@@ -130,11 +131,13 @@ router
   .get(lib.getLimiter, async (req, res) => {
     try {
       const products = await sequelize.query(
-        `SELECT DISTINCT product_color, color_name FROM ${process.env.DB_NAME}.products
+        `SELECT DISTINCT product_color, color_name, sum(inventory) as inventory FROM ${process.env.DB_NAME}.products
 
       INNER JOIN ${process.env.DB_NAME}.colors as colors ON colors.color_id = product_color
 
-      WHERE parent_design = ${req.params.design_id} AND product_size = ${req.params.size_id} AND product_category = ${req.params.style_id};`,
+      WHERE parent_design = ${req.params.design_id} AND product_size = ${req.params.size_id} AND product_category = ${req.params.style_id} AND inventory > 0
+      GROUP BY product_color, color_name
+      ;`,
         { type: QueryTypes.SELECT }
       );
 
