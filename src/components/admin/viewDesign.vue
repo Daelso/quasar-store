@@ -5,8 +5,14 @@
       <q-icon class="editIcon" name="edit" @click="namePrompt = true" />
     </h3>
     <div class="desc">
+      Description:
       {{ this.desc }}
       <q-icon class="editIcon" name="edit" @click="descPrompt = true" />
+    </div>
+    <div class="desc q-mt-md">
+      Keywords (Comma separate each one):
+      {{ this.keywords }}
+      <q-icon class="editIcon" name="edit" @click="keywordPrompt = true" />
     </div>
     <div class="images">
       <div
@@ -137,6 +143,36 @@
           color="secondary"
           flat
           label="Edit Desc"
+          @click="updateDesign()"
+          v-close-popup
+        />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
+
+  <q-dialog v-model="keywordPrompt" persistent>
+    <q-card dark style="min-width: 350px">
+      <q-card-section>
+        <div class="text-h6">Edit Keywords (Comma Separate Each One!)</div>
+      </q-card-section>
+
+      <q-card-section dark class="q-pt-none">
+        <q-input
+          dark
+          dense
+          label="Keywords"
+          v-model="keywords"
+          autofocus
+          autogrow
+        />
+      </q-card-section>
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn color="secondary" flat label="Cancel" v-close-popup />
+        <q-btn
+          color="secondary"
+          flat
+          label="Edit Keywords"
           @click="updateDesign()"
           v-close-popup
         />
@@ -280,12 +316,14 @@ export default {
     } catch (err) {
       router.push({ name: "login" });
     }
-    const { design_name, design_desc, design_images } = designData.data;
+    const { design_name, design_desc, design_images, keywords } =
+      designData.data;
     return {
       isAdmin: ref(isAdmin),
       baseUrl: ref(baseUrl),
       name: ref(design_name),
       desc: ref(design_desc),
+      keywords: ref(keywords),
       images: ref(design_images),
       deleteImagePrompt: ref(false),
       selectedImage: ref(null),
@@ -296,6 +334,7 @@ export default {
       namePrompt: ref(false),
       productPrompt: ref(false),
       editProductPrompt: ref(false),
+      keywordPrompt: ref(false),
       id: ref(id),
       products: ref(products.data),
       initialPagination: {
@@ -379,6 +418,7 @@ export default {
           name: this.name,
           desc: this.desc,
           images: this.images,
+          keywords: this.keywords,
         };
         await this.$axios.put(
           this.baseUrl + "/designs/design/" + this.curId,
