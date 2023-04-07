@@ -78,6 +78,11 @@ const routes = [
         path: "designs/:id",
         component: () => import("src/pages/product/productPage.vue"),
       },
+      {
+        name: "viewCart",
+        path: "cart",
+        component: () => import("src/pages/product/viewCartPage.vue"),
+      },
     ],
   },
 

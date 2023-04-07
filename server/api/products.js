@@ -10,6 +10,7 @@ const lib = require("../lib");
 const Products = require("../models/Products");
 const { sequelize } = require("../database");
 const { QueryTypes } = require("sequelize");
+const { Op } = require("sequelize");
 
 //Route is base/products/
 
@@ -163,5 +164,26 @@ router
       return res.status(500);
     }
   });
+
+router.route("/getCart").post(lib.getLimiter, async (req, res) => {
+  try {
+    const cart = req.body.data;
+    const products = await sequelize.query(
+      `SELECT products.product_id, product_name, product_desc, sale_price, sizes.size_name, colors.color_name, category.desc FROM ${process.env.DB_NAME}.products as products
+
+      INNER JOIN ${process.env.DB_NAME}.sizes as sizes ON sizes.size_id = product_size
+      INNER JOIN ${process.env.DB_NAME}.colors as colors ON colors.color_id = product_color
+      INNER JOIN ${process.env.DB_NAME}.categories as category ON category.category_id = product_category
+
+      WHERE product_id IN (${cart})
+
+      ORDER BY product_id`,
+      { type: QueryTypes.SELECT }
+    );
+    return res.status(200).json(products);
+  } catch (err) {
+    return res.status(500);
+  }
+});
 
 module.exports = router; //Exports our routes
