@@ -571,7 +571,6 @@ const sendContactForm = (content) => {
         return;
       }
     });
-    console.log("Email sent!");
   } catch (err) {
     return;
   }
