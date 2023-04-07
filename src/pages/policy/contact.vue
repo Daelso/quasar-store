@@ -84,7 +84,13 @@ export default defineComponent({
     const email = ref(null);
     const reason = ref(null);
     const text = ref(null);
-    const options = ref(["Feedback", "Bug Report", "Advertising", "Legal"]);
+    const options = ref([
+      "Feedback",
+      "Bug Report",
+      "Advertising",
+      "Legal",
+      "Copyright",
+    ]);
     const router = useRouter();
 
     let baseUrl = "";
