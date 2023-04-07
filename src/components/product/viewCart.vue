@@ -16,11 +16,12 @@
     >
       <template v-slot:no-data>
         <q-tr class="empty" @click="goHome()">
-          <q-td class="total-price" colspan="100%">
+          <q-td colspan="100%">
             The cart is empty! Check out our catalog.
           </q-td>
         </q-tr>
       </template>
+
       <template v-slot:bottom>
         <q-tr>
           <q-td class="total-price" colspan="100%">
@@ -74,6 +75,11 @@
 @media only screen and (max-width: 812px) {
   .desktop {
     width: 350px;
+  }
+  .empty {
+    display: flex;
+    margin: auto;
+    font-size: 1rem;
   }
   .total-price {
     font-size: 1.5rem;
