@@ -151,6 +151,7 @@
   .input-area {
     gap: 25px;
     align-items: center;
+    position: relative;
   }
   .nos-font {
     font-size: 2rem;
