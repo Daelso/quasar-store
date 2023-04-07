@@ -162,13 +162,42 @@
 import { ref } from "vue";
 import nosImage from "../../assets/images/Nosfer_logo.png";
 import { useCounterStore } from "stores/cart";
+import { useMeta } from "quasar";
 
 export default {
   name: "viewProduct",
-
   async setup() {
     const axios = require("axios");
     const store = useCounterStore();
+
+    const title = ref("Product Page");
+    const meta = {
+      description: {
+        name: "description",
+        content:
+          "Stylish, comfortable clothing. Retro and vintage style with designs from your favorite video games.",
+      },
+      keywords: {
+        name: "keywords",
+        content:
+          "clothing, vintage, stylish, cool, video games, retro, comfort colors, soft,",
+      },
+    };
+
+    useMeta(() => {
+      return {
+        title: title.value,
+        meta: meta,
+      };
+    });
+
+    function setAnotherTitle(newTitle) {
+      title.value = newTitle; // will automatically trigger a Meta update due to the binding
+    }
+    function updateMetaTags(newDesc, newKeywords) {
+      meta.description.content = newDesc;
+      meta.keywords.content = newKeywords;
+    }
 
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {
@@ -184,6 +213,7 @@ export default {
     );
 
     console.log(productInfo.data);
+
     return {
       store,
       baseUrl: ref(baseUrl),
@@ -191,6 +221,8 @@ export default {
       productInfo: ref(productInfo.data),
       slide: ref(0),
       url: ref(productInfo.data[0].design_images[0]),
+      setAnotherTitle,
+      updateMetaTags,
     };
   },
   data() {
@@ -203,6 +235,13 @@ export default {
       price: "",
       finalProduct: null,
     };
+  },
+  mounted() {
+    this.setAnotherTitle(this.productInfo[0].design_name);
+    this.updateMetaTags(
+      this.productInfo[0].design_desc,
+      this.productInfo[0].keywords
+    );
   },
   methods: {
     changePrimaryImage(image) {

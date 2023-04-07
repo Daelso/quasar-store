@@ -47,13 +47,14 @@ router.route("/design/:id").put(lib.authenticateToken, async (req, res) => {
   if (!req.currentUser.is_admin) return res.sendStatus(401);
   try {
     const design = await Designs.findByPk(req.params.id);
-    const { name, desc, images } = req.body.updatedDesign;
+    const { name, desc, images, keywords } = req.body.updatedDesign;
 
     design.update({
       design_name: name,
       design_desc: desc,
       design_images: images,
       updatedAt: Date.now(),
+      keywords: keywords,
     });
     return res.status(200).json(design);
   } catch (err) {
@@ -64,7 +65,7 @@ router.route("/design/:id").put(lib.authenticateToken, async (req, res) => {
 router.route("/new").post(lib.authenticateToken, async (req, res) => {
   if (!req.currentUser.is_admin) return res.sendStatus(401);
   try {
-    const { name, desc, images } = req.body.newDesign;
+    const { name, desc, images, keywords } = req.body.newDesign;
 
     await Designs.create({
       design_name: name,
@@ -74,6 +75,7 @@ router.route("/new").post(lib.authenticateToken, async (req, res) => {
       updatedAt: Date.now(),
       created_by: req.currentUser.id,
       live: 0,
+      keywords: keywords,
     });
   } catch (err) {
     console.log(err);

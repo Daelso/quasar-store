@@ -36,6 +36,10 @@ const Designs = db.sequelize.define("designs", {
     type: Sequelize.INTEGER,
     allowNull: false,
   },
+  keywords: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
 });
 
 module.exports = Designs;

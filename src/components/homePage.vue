@@ -76,11 +76,38 @@
 <script>
 import { ref } from "vue";
 import nosImage from "../assets/images/Nosfer_logo.png";
+import { useMeta } from "quasar";
+
+const metaData = {
+  // sets document title
+  title: "Nicofest",
+  // optional; sets final title as "Index Page - My Website", useful for multiple level meta
+  titleTemplate: (title) => `${title} - Catalog`,
+
+  // meta tags
+  meta: {
+    description: {
+      name: "description",
+      content:
+        "Load up on your favorite stylish and comfortable retro video-game designs.",
+    },
+    keywords: {
+      name: "keywords",
+      content:
+        "Clothing, tshirt, longsleeve, crew neck, retro, video games, video game",
+    },
+    equiv: {
+      "http-equiv": "Content-Type",
+      content: "text/html; charset=UTF-8",
+    },
+  },
+};
 
 export default {
   async setup() {
     const axios = require("axios");
     let currentUser = ref(false);
+    useMeta(metaData);
 
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {

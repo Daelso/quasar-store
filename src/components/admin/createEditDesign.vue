@@ -8,6 +8,15 @@
       <q-input
         dark
         filled
+        label="Keywords"
+        v-model="keywords"
+        autofocus
+        autogrow
+        hint="Comma separated"
+      />
+      <q-input
+        dark
+        filled
         v-model="image"
         label="Direct Image Link"
         hint="Use imgur or something similar, hit enter to submit. One link at a time."
@@ -107,6 +116,7 @@ export default {
       desc: "",
       images: [],
       image: "",
+      keywords: "",
     };
   },
   methods: {
@@ -116,6 +126,7 @@ export default {
           name: this.name,
           desc: this.desc,
           images: this.images,
+          keywords: this.keywords,
         };
         await this.$axios.post(
           this.baseUrl + "/designs/new",
