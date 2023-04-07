@@ -17,7 +17,7 @@
 
         <q-item clickable>
           <q-btn dense color="black" round icon="shopping_cart" class="q-ml-md">
-            <q-badge color="red" floating>0</q-badge>
+            <q-badge color="red" floating>{{ this.store.counter }}</q-badge>
           </q-btn>
         </q-item>
 
@@ -104,6 +104,7 @@ import { defineComponent, ref } from "vue";
 import EssentialLink from "components/EssentialLink.vue";
 import ProfileLinks from "components/profileLinks.vue";
 import AdminLink from "src/components/AdminLink.vue";
+import { useCounterStore } from "stores/cart";
 
 const linksList = [
   {
@@ -134,12 +135,14 @@ export default defineComponent({
     const rightDrawerOpen = ref(false);
     let currentUser = ref(false);
     let loggedIn = ref(false);
+    const store = useCounterStore();
 
     return {
       currentUser,
       loggedIn,
       essentialLinks: linksList,
       leftDrawerOpen,
+      store,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
@@ -163,6 +166,13 @@ export default defineComponent({
   async mounted() {
     const axios = require("axios");
 
+    //handling in case of refresh
+    if (this.store.counter === 0) {
+      let cart = JSON.parse(localStorage.getItem("cart"));
+      cart.forEach((item) => {
+        this.store.increment();
+      });
+    }
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {
       baseUrl = "http://localhost:5000";

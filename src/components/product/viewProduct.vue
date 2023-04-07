@@ -161,12 +161,14 @@
 <script>
 import { ref } from "vue";
 import nosImage from "../../assets/images/Nosfer_logo.png";
+import { useCounterStore } from "stores/cart";
 
 export default {
   name: "viewProduct",
 
   async setup() {
     const axios = require("axios");
+    const store = useCounterStore();
 
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {
@@ -183,6 +185,7 @@ export default {
 
     console.log(productInfo.data);
     return {
+      store,
       baseUrl: ref(baseUrl),
       designId: ref(designId),
       productInfo: ref(productInfo.data),
@@ -254,6 +257,7 @@ export default {
       }
       cart.push(this.finalProduct.product_id);
       localStorage.setItem("cart", JSON.stringify(cart));
+      this.store.increment();
 
       this.$q.notify({
         message: `${this.productInfo[0].design_name} - ${this.style.style} (${this.size.size_name} - ${this.color.color_name}) added to cart!`,
