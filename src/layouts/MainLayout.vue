@@ -15,7 +15,7 @@
           <router-link class="titleLogo" to="/">SchreckNet</router-link>
         </q-toolbar-title>
 
-        <q-item clickable>
+        <q-item clickable @click="goToCart()">
           <q-btn dense color="black" round icon="shopping_cart">
             <q-badge color="red" floating>{{ this.store.counter }}</q-badge>
           </q-btn>
@@ -160,6 +160,12 @@ export default defineComponent({
       } else {
         return false;
       }
+    },
+  },
+
+  methods: {
+    goToCart() {
+      this.$router.push({ name: "viewCart" });
     },
   },
 
