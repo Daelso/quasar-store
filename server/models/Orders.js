@@ -52,6 +52,11 @@ const Orders = db.sequelize.define("orders", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  stripe_checkout_id: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    unique: true,
+  },
   createdAt: {
     type: Sequelize.DATE,
     allowNull: false,
