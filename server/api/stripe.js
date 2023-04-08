@@ -63,8 +63,31 @@ router
 router.route("/handleSuccess").post(async (req, res) => {
   const sessionID = req.query.session_id;
   try {
+    const session = await stripe.checkout.sessions.retrieve(sessionID);
+
+    if (session.payment_status === "paid" && !session.metadata.processed) {
+      const { name, address, email } = session.shipping;
+
+      // Insert the order information into the "orders" table
+      const sql = `INSERT INTO orders (name, address, email) VALUES (?, ?, ?)`;
+      const values = [name, JSON.stringify(address), email];
+
+      // Set the processed flag to true in the Checkout Session metadata
+      // await stripe.checkout.sessions.update(sessionID, {
+      //   metadata: {
+      //     processed: true,
+      //   },
+      // });
+
+      res.send("Order has been placed successfully!");
+    } else if (session.metadata.processed) {
+      res.status(400).send("Order has already been processed.");
+    } else {
+      res.status(400).send("Payment was not successful.");
+    }
   } catch (err) {
-    return res.status(500);
+    console.error(err);
+    res.status(500).send("An error occurred.");
   }
 });
 
