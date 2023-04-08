@@ -14,6 +14,34 @@ export default {
     const store = useCounterStore();
     const $q = useQuasar();
 
+    const addQuantity = async (intArr, objArr) => {
+      // create an object to store the counts for each value in the integer array
+      const counts = {};
+
+      // loop through the integer array and count the occurrences of each value
+      for (let i = 0; i < intArr.length; i++) {
+        const value = intArr[i];
+        if (!counts[value]) {
+          counts[value] = 0;
+        }
+        counts[value]++;
+      }
+
+      // loop through the object array and add a "quantity" key to each object
+      for (let i = 0; i < objArr.length; i++) {
+        const product = objArr[i];
+        const productId = product.product_id;
+        if (counts[productId]) {
+          product.quantity = counts[productId];
+        } else {
+          product.quantity = 0;
+        }
+      }
+
+      // return the modified object array
+      return objArr;
+    };
+
     const params = new Proxy(new URLSearchParams(window.location.search), {
       get: (searchParams, prop) => searchParams.get(prop),
     });
@@ -38,6 +66,7 @@ export default {
       shoppingCart = await axios.post(baseUrl + "/products/getCart", {
         data: cart,
       });
+      await addQuantity(cart, shoppingCart.data);
     }
 
     await axios.post(
