@@ -213,8 +213,6 @@ export default {
       baseUrl + "/designs/viewProduct/" + designId
     );
 
-    console.log(productInfo.data);
-
     return {
       store,
       baseUrl: ref(baseUrl),
@@ -279,7 +277,6 @@ export default {
           `/products/getFinalProduct/${this.designId}/${this.style.style_id}/${this.size.product_size}/${this.color.product_color}`
       );
       this.finalProduct = arr.data[0];
-      console.log(this.finalProduct);
     },
     addToCart() {
       let cart = JSON.parse(localStorage.getItem("cart"));

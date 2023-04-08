@@ -118,7 +118,6 @@ export default {
 
     const designs = await axios.get(baseUrl + "/designs/active");
 
-    console.log(designs.data);
     return {
       currentUser,
       baseUrl: ref(baseUrl),
