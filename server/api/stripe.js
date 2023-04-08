@@ -7,6 +7,9 @@ router.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const lib = require("../lib");
+const Customer_Emails = require("../models/Customer_Emails");
+const Orders = require("../models/Orders");
+const { or } = require("sequelize");
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 //Route is base/stripe/
@@ -61,17 +64,53 @@ router
   });
 
 router.route("/handleSuccess").post(async (req, res) => {
-  const sessionID = req.query.session_id;
+  const sessionID = req.body.data.session_id;
+
+  const currentUser = lib.getCurrentUser(req, res);
+
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionID);
 
-    if (session.payment_status === "paid" && !session.metadata.processed) {
-      const { name, address, email } = session.shipping;
+    //stripe annoyingly converts booleans to string
+    if (
+      session.payment_status === "paid" &&
+      session.metadata.processed === "false"
+    ) {
+      const { name, email } = session.customer_details;
+      const { line1, line2, city, state, postal_code, country } =
+        session.shipping_details.address;
 
-      // Insert the order information into the "orders" table
-      const sql = `INSERT INTO orders (name, address, email) VALUES (?, ?, ?)`;
-      const values = [name, JSON.stringify(address), email];
+      const { amount_total } = session.shipping_cost;
 
+      const userEmail = await Customer_Emails.findOrCreate({
+        where: {
+          email: email,
+        },
+        defaults: {
+          email: email,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        },
+      });
+
+      console.log(userEmail[0].dataValues);
+
+      const order = await Orders.create({
+        order_status: 1,
+        ordered_by: currentUser ? currentUser.id : null,
+        shipping_address: line1,
+        shipping_address_2: line2 ? line2 : null,
+        shipping_city: city,
+        shipping_zip: postal_code,
+        shipping_state: state,
+        shipping_country: country,
+        shipping_cost: amount_total,
+        ship_to: name,
+        customer_email: userEmail[0].dataValues.email_id,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      });
+      console.log(order);
       // Set the processed flag to true in the Checkout Session metadata
       // await stripe.checkout.sessions.update(sessionID, {
       //   metadata: {
@@ -80,7 +119,7 @@ router.route("/handleSuccess").post(async (req, res) => {
       // });
 
       res.send("Order has been placed successfully!");
-    } else if (session.metadata.processed) {
+    } else if (session.metadata.processed === "true") {
       res.status(400).send("Order has already been processed.");
     } else {
       res.status(400).send("Payment was not successful.");
