@@ -38,7 +38,11 @@
       >
         Continue Shopping
       </div>
-      <div @click="goToCheckout()" class="checkout text-center broken-console">
+      <div
+        v-if="this.shoppingCart && this.shoppingCart.length > 0"
+        @click="checkout()"
+        class="checkout text-center broken-console"
+      >
         Checkout
       </div>
     </div>
@@ -154,13 +158,15 @@ export default {
     }
 
     let shoppingCart = "";
-    if (cart.length > 0) {
+    if (cart !== null && cart.length > 0) {
       shoppingCart = await axios.post(baseUrl + "/products/getCart", {
         data: cart,
       });
     }
+
     return {
       store,
+      localCart: ref(cart),
       baseUrl: ref(baseUrl),
       shoppingCart: ref(shoppingCart.data),
       mobile: ref(false),
@@ -191,6 +197,12 @@ export default {
           field: "sale_price",
           format: (val) => "$" + val,
         },
+        {
+          name: "quantity",
+          align: "left",
+          label: "Quantity",
+          field: "quantity",
+        },
       ],
     };
   },
@@ -206,7 +218,12 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      run:
+        this.localCart !== null && this.shoppingCart
+          ? this.addQuantity(this.localCart, this.shoppingCart)
+          : "",
+    };
   },
   methods: {
     goHome() {
@@ -230,15 +247,57 @@ export default {
       this.store.cartSize(localStorageCart.length);
       localStorage.setItem("cart", JSON.stringify(localStorageCart));
     },
-    goToCheckout() {
-      this.$router.push({ name: "checkoutComponent" });
+    async checkout() {
+      try {
+        this.$q.loading.show({
+          delay: 450, // ms
+        });
+        const stripe = await this.$axios.post(
+          this.baseUrl + "/stripe/create-checkout-session",
+          { data: this.shoppingCart },
+          {
+            withCredentials: true,
+          }
+        );
+        this.$q.loading.hide();
+        window.location.href = stripe.data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    addQuantity(intArr, objArr) {
+      // create an object to store the counts for each value in the integer array
+      const counts = {};
+
+      // loop through the integer array and count the occurrences of each value
+      for (let i = 0; i < intArr.length; i++) {
+        const value = intArr[i];
+        if (!counts[value]) {
+          counts[value] = 0;
+        }
+        counts[value]++;
+      }
+
+      // loop through the object array and add a "quantity" key to each object
+      for (let i = 0; i < objArr.length; i++) {
+        const product = objArr[i];
+        const productId = product.product_id;
+        if (counts[productId]) {
+          product.quantity = counts[productId];
+        } else {
+          product.quantity = 0;
+        }
+      }
+
+      // return the modified object array
+      return objArr;
     },
   },
   computed: {
     getTotalPrice() {
       let price = 0;
       this.shoppingCart.forEach((product) => {
-        price += parseFloat(product.sale_price);
+        price += parseFloat(product.sale_price) * product.quantity;
       });
       return price.toFixed(2);
     },

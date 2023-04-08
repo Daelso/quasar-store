@@ -175,7 +175,9 @@ export default defineComponent({
     //handling in case of refresh
     if (this.store.counter === 0) {
       const cart = JSON.parse(localStorage.getItem("cart"));
-      this.store.cartSize(cart.length);
+      if (cart !== null) {
+        this.store.cartSize(cart.length);
+      }
     }
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {

@@ -57,6 +57,9 @@ app.use("/sizes", sizeRoutes);
 
 const colorRoutes = require("./server/api/colors");
 app.use("/colors", colorRoutes);
+
+const stripeRoutes = require("./server/api/stripe");
+app.use("/stripe", stripeRoutes);
 //Uses userRoutes file to handle all user related endpoints
 
 //Below are various controller links
