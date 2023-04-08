@@ -53,9 +53,6 @@ router
         line_items: stripeLineItems,
         success_url: `${process.env.CLIENT_URL}/order-complete?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.CLIENT_URL}/cart`,
-        metadata: {
-          processed: false,
-        },
       });
       res.status(200).json(session.url);
     } catch (err) {
@@ -72,10 +69,7 @@ router.route("/handleSuccess").post(async (req, res) => {
     const session = await stripe.checkout.sessions.retrieve(sessionID);
 
     //stripe annoyingly converts booleans to string
-    if (
-      session.payment_status === "paid" &&
-      session.metadata.processed === "false"
-    ) {
+    if (session.payment_status === "paid") {
       const { name, email } = session.customer_details;
       const { line1, line2, city, state, postal_code, country } =
         session.shipping_details.address;
@@ -93,8 +87,6 @@ router.route("/handleSuccess").post(async (req, res) => {
         },
       });
 
-      console.log(userEmail[0].dataValues);
-
       const order = await Orders.create({
         order_status: 1,
         ordered_by: currentUser ? currentUser.id : null,
@@ -106,21 +98,14 @@ router.route("/handleSuccess").post(async (req, res) => {
         shipping_country: country,
         shipping_cost: amount_total,
         ship_to: name,
+        stripe_checkout_id: sessionID,
         customer_email: userEmail[0].dataValues.email_id,
         createdAt: Date.now(),
         updatedAt: Date.now(),
       });
       console.log(order);
-      // Set the processed flag to true in the Checkout Session metadata
-      // await stripe.checkout.sessions.update(sessionID, {
-      //   metadata: {
-      //     processed: true,
-      //   },
-      // });
 
       res.send("Order has been placed successfully!");
-    } else if (session.metadata.processed === "true") {
-      res.status(400).send("Order has already been processed.");
     } else {
       res.status(400).send("Payment was not successful.");
     }
