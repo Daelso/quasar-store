@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 const db = require("../database");
 
-const Orders = db.sequelize.define("order_items", {
+const Order_Items = db.sequelize.define("order_items", {
   line_id: {
     type: Sequelize.INTEGER,
     allowNull: false,
@@ -30,4 +30,4 @@ const Orders = db.sequelize.define("order_items", {
   },
 });
 
-module.exports = Orders;
+module.exports = Order_Items;

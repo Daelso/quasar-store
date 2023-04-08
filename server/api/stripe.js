@@ -10,6 +10,7 @@ const lib = require("../lib");
 const Customer_Emails = require("../models/Customer_Emails");
 const Orders = require("../models/Orders");
 const { or } = require("sequelize");
+const Order_Items = require("../models/Order_Items");
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 //Route is base/stripe/
@@ -65,10 +66,13 @@ router.route("/handleSuccess").post(async (req, res) => {
 
   const currentUser = lib.getCurrentUser(req, res);
 
+  const shoppingCart = req.body.data.cart;
+
+  console.log(shoppingCart);
+
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionID);
 
-    //stripe annoyingly converts booleans to string
     if (session.payment_status === "paid") {
       const { name, email } = session.customer_details;
       const { line1, line2, city, state, postal_code, country } =
@@ -103,7 +107,16 @@ router.route("/handleSuccess").post(async (req, res) => {
         createdAt: Date.now(),
         updatedAt: Date.now(),
       });
-      console.log(order);
+
+      shoppingCart.forEach(async (item) => {
+        await Order_Items.create({
+          parent_order: order.dataValues.order_id,
+          product_id: item.product_id,
+          quantity: item.quantity,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        });
+      });
 
       res.send("Order has been placed successfully!");
     } else {
