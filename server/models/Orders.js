@@ -8,10 +8,6 @@ const Orders = db.sequelize.define("orders", {
     primaryKey: true,
     autoIncrement: true,
   },
-  order_total: {
-    type: Sequelize.DECIMAL,
-    allowNull: false,
-  },
   order_status: {
     type: Sequelize.INTEGER,
     allowNull: false,
@@ -24,6 +20,10 @@ const Orders = db.sequelize.define("orders", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  shipping_address_2: {
+    type: Sequelize.STRING,
+    allowNull: true,
+  },
   shipping_city: {
     type: Sequelize.STRING,
     allowNull: false,
@@ -32,7 +32,23 @@ const Orders = db.sequelize.define("orders", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  shipping_state: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  shipping_country: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
   ship_to: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  shipping_cost: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
+  customer_email: {
     type: Sequelize.STRING,
     allowNull: false,
   },
