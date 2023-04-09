@@ -79,7 +79,10 @@ export default {
       store.clear();
       localStorage.clear("cart");
       shoppingCart = null;
-      router.push({ name: "viewOrder", params: { id: success.data } });
+      router.push({
+        name: "viewOrder",
+        params: { cart: success.data.cart, id: success.data.order },
+      });
       $q.loading.hide();
     } catch (err) {
       console.log(err);

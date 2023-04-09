@@ -90,7 +90,7 @@ const routes = [
       },
       {
         name: "viewOrder",
-        path: "order/:id",
+        path: "order/:cart/:id",
         component: () => import("src/pages/product/viewOrder.vue"),
       },
     ],
