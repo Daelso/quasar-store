@@ -88,6 +88,11 @@ const routes = [
         path: "order-complete",
         component: () => import("src/pages/product/checkoutPage.vue"),
       },
+      {
+        name: "viewOrder",
+        path: "order/:id",
+        component: () => import("src/pages/product/viewOrder.vue"),
+      },
     ],
   },
 

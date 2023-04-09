@@ -69,7 +69,7 @@ export default {
         await addQuantity(cart, shoppingCart.data);
       }
 
-      await axios.post(
+      const success = await axios.post(
         baseUrl + "/stripe/handleSuccess",
         { data: { cart: shoppingCart.data, session_id: stripeCart } },
         {
@@ -78,19 +78,16 @@ export default {
       );
       store.clear();
       localStorage.clear("cart");
-      this.shoppingCart = null;
-      router.push({ name: "home" });
+      shoppingCart = null;
+      router.push({ name: "viewOrder", params: { id: success.data } });
+      $q.loading.hide();
     } catch (err) {
+      console.log(err);
       $q.loading.hide();
       router.push({ name: "home" });
     }
 
-    return {
-      stripe_cart: ref(stripeCart),
-      store,
-      baseUrl: ref(baseUrl),
-      shoppingCart: ref(shoppingCart.data),
-    };
+    return {};
   },
   data() {
     return {};
