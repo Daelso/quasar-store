@@ -118,7 +118,7 @@ router.route("/handleSuccess").post(async (req, res) => {
         });
       });
 
-      res.send("Order has been placed successfully!");
+      res.status(200).json(order.dataValues.order_id);
     } else {
       res.status(400).send("Payment was not successful.");
     }
