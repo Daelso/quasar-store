@@ -9,7 +9,6 @@ app.use(express.urlencoded({ extended: true }));
 const lib = require("../lib");
 const Customer_Emails = require("../models/Customer_Emails");
 const Orders = require("../models/Orders");
-const { or } = require("sequelize");
 const Order_Items = require("../models/Order_Items");
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
@@ -118,7 +117,9 @@ router.route("/handleSuccess").post(async (req, res) => {
         });
       });
 
-      res.status(200).json(order.dataValues.order_id);
+      res
+        .status(200)
+        .json({ order: order.dataValues.order_id, cart: sessionID });
     } else {
       res.status(400).send("Payment was not successful.");
     }
