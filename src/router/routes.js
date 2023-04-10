@@ -98,6 +98,11 @@ const routes = [
         path: "myOrders",
         component: () => import("src/pages/product/myOrders.vue"),
       },
+      {
+        name: "allOrders",
+        path: "orders/all",
+        component: () => import("src/pages/admin/viewAllOrders.vue"),
+      },
     ],
   },
 

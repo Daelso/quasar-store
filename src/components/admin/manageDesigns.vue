@@ -1,14 +1,13 @@
 <template>
-  <div class="q-pa-lg designTable">
+  <div class="q-pa-md">
     <q-table
       flat
       bordered
       dark
-      grid
-      card-container-class="justify-center q-pa-xl"
-      card-container-style="min-width:900px;"
+      class="table"
       title="Designs"
       :rows="rows"
+      grid
       :columns="columns"
       row-key="name"
       :filter="filter"
@@ -37,7 +36,12 @@
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.table {
+  width: 100%;
+  height: 100%;
+}
+</style>
 
 <script>
 import { ref } from "vue";
@@ -100,12 +104,6 @@ export default {
           name: "design_desc",
           label: "Design Description",
           field: "design_desc",
-          sortable: true,
-        },
-        {
-          name: "inventory",
-          label: "Total Remaining Inventory",
-          field: "carbs",
           sortable: true,
         },
       ],
