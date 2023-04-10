@@ -10,6 +10,7 @@ const lib = require("../lib");
 const Customer_Emails = require("../models/Customer_Emails");
 const Orders = require("../models/Orders");
 const Order_Items = require("../models/Order_Items");
+const Products = require("../models/Products");
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 //Route is base/stripe/
@@ -18,7 +19,9 @@ router
   .route("/create-checkout-session")
   .post(lib.postLimiter, async (req, res) => {
     try {
-      const line_items = req.body.data;
+      let line_items = req.body.data;
+
+      line_items = await priceValidation(line_items);
 
       const stripeLineItems = line_items.map((product) => {
         return {
@@ -27,7 +30,7 @@ router
             product_data: {
               name: product.product_name,
             },
-            unit_amount: (product.sale_price * 100).toFixed(0),
+            unit_amount: (product.verified_price * 100).toFixed(0),
           },
           quantity: product.quantity,
         };
@@ -66,8 +69,6 @@ router.route("/handleSuccess").post(async (req, res) => {
   const currentUser = lib.getCurrentUser(req, res);
 
   const shoppingCart = req.body.data.cart;
-
-  console.log(shoppingCart);
 
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionID);
@@ -128,5 +129,13 @@ router.route("/handleSuccess").post(async (req, res) => {
     res.status(500).send("An error occurred.");
   }
 });
+
+const priceValidation = async (items) => {
+  for (const item of items) {
+    const product = await Products.findByPk(item.product_id);
+    item.verified_price = product.dataValues.sale_price;
+  }
+  return items;
+};
 
 module.exports = router; //Exports our routes
