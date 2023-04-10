@@ -46,6 +46,7 @@ router
         order_status,
         orders.createdat,
         Sum(sale_price) AS item_cost,
+        stripe_checkout_id,
         shipping_cost
  FROM   ${process.env.DB_NAME}.orders
         INNER JOIN ${process.env.DB_NAME}.order_items
@@ -60,7 +61,8 @@ router
          OR customer.email = user.email
  GROUP  BY order_id,
            createdat,
-           order_status
+           order_status,
+           stripe_checkout_id
 
        ORDER BY order_id desc
       `,

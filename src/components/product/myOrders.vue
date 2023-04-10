@@ -12,9 +12,10 @@
       class="desktop"
       card-container-class="cart-table"
       card-class="card"
+      @row-click="goToOrder"
     >
       <template v-slot:no-data>
-        <q-tr class="empty" @click="goHome()">
+        <q-tr class="empty" @click="goHome">
           <q-td colspan="100%">
             You don't have any orders! Check out our catalog.
           </q-td>
@@ -178,7 +179,15 @@ export default defineComponent({
       this.mobile = false;
     }
   },
-  methods: {},
+  methods: {
+    goToOrder(evt, row) {
+      console.log(row);
+      this.$router.push({
+        name: "viewOrder",
+        params: { cart: row.stripe_checkout_id, id: row.order_id },
+      });
+    },
+  },
   computed: {},
 });
 </script>
