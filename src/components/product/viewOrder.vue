@@ -192,6 +192,9 @@ export default defineComponent({
   },
   computed: {
     getTotalPrice() {
+      if (this.order_items.length == 1) {
+        return this.order_items[0].sale_price;
+      }
       return this.order_items.reduce(
         (a, b) => parseFloat(a.sale_price) + parseFloat(b.sale_price)
       );
