@@ -1,4 +1,17 @@
 <template>
+  <q-item clickable style="color: red" @click="viewMyOrders">
+    <q-item-section avatar>
+      <q-icon color="secondary" name="shopping_cart_checkout" />
+    </q-item-section>
+
+    <q-item-section>
+      <q-item-label>My Orders</q-item-label>
+      <q-item-label caption style="color: white"
+        >View all associated orders</q-item-label
+      >
+    </q-item-section>
+  </q-item>
+
   <q-item clickable style="color: red" @click="logout">
     <q-item-section avatar>
       <q-icon color="secondary" name="logout" />
@@ -6,7 +19,7 @@
 
     <q-item-section>
       <q-item-label>Logout</q-item-label>
-      <q-item-label caption style="color: white">quasar.dev</q-item-label>
+      <q-item-label caption style="color: white">See ya soon!</q-item-label>
     </q-item-section>
   </q-item>
 </template>
@@ -56,6 +69,11 @@ export default defineComponent({
           });
       },
     };
+  },
+  methods: {
+    viewMyOrders() {
+      this.$router.push({ name: "myOrders" });
+    },
   },
 });
 </script>

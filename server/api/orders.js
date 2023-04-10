@@ -16,7 +16,7 @@ const { QueryTypes } = require("sequelize");
 router.route("/order/:id").get(async (req, res) => {
   try {
     const items = await sequelize.query(
-      `SELECT order_id, order_status, line_id, products.product_name, sizes.size_name, color_name, categories.desc, quantity, orders.createdAt, sale_price, shipping_address, shipping_address_2, shipping_city, shipping_state, shipping_zip FROM ${process.env.DB_NAME}.orders
+      `SELECT order_id, order_status, line_id, products.product_name, sizes.size_name, color_name, categories.desc, quantity, orders.createdAt, sale_price, shipping_address, shipping_address_2, shipping_city, shipping_state, shipping_cost, shipping_zip FROM ${process.env.DB_NAME}.orders
 
       INNER JOIN ${process.env.DB_NAME}.order_items ON parent_order = order_id
       INNER JOIN ${process.env.DB_NAME}.products ON products.product_id = order_items.product_id
@@ -36,5 +36,40 @@ router.route("/order/:id").get(async (req, res) => {
     res.status(500).json(err.message);
   }
 });
+
+router
+  .route("/my")
+  .get([lib.authenticateToken, lib.getLimiter], async (req, res) => {
+    try {
+      const items = await sequelize.query(
+        `SELECT order_id,
+        order_status,
+        orders.createdat,
+        Sum(sale_price) AS item_cost,
+        shipping_cost
+ FROM   ${process.env.DB_NAME}.orders
+        INNER JOIN ${process.env.DB_NAME}.order_items
+                ON parent_order = order_id
+        INNER JOIN ${process.env.DB_NAME}.products
+                ON products.product_id = order_items.product_id
+        INNER JOIN ${process.env.DB_NAME}.users AS user
+                ON user.user_id = ordered_by
+        INNER JOIN ${process.env.DB_NAME}.customer_emails AS customer
+                ON customer.email = user.email
+ WHERE  ordered_by = ${req.currentUser.id}
+         OR customer.email = user.email
+ GROUP  BY order_id,
+           createdat,
+           order_status
+
+       ORDER BY order_id desc
+      `,
+        { type: QueryTypes.SELECT }
+      );
+      res.status(200).json(items);
+    } catch (err) {
+      res.status(500).json(err.message);
+    }
+  });
 
 module.exports = router; //Exports our routes
