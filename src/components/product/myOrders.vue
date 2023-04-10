@@ -1,58 +1,32 @@
 <template>
   <div class="q-pa-md cart-container">
     <q-table
-      :title="'Order #' + this.order_items[0].order_id + ' - Thank you!'"
+      title="My Previous Orders"
       :rows="order_items"
       :columns="columns"
       bordered
       row-key="name"
       dark
       :title-class="{ 'text-h4 text-white': this.mobile }"
-      :grid="this.mobile"
+      grid
       class="desktop"
       card-container-class="cart-table"
       card-class="card"
     >
       <template v-slot:no-data>
         <q-tr class="empty" @click="goHome()">
-          <q-td colspan="100%"> Something's up if you're seeing this </q-td>
-        </q-tr>
-      </template>
-
-      <template v-slot:bottom>
-        <q-tr>
-          <q-td class="total-price" colspan="100%">
-            Shipping Cost: ${{
-              (this.order_items[0].shipping_cost / 100).toFixed(2)
-            }}
-            - Total Price: ${{ getTotalPrice }}
+          <q-td colspan="100%">
+            You don't have any orders! Check out our catalog.
           </q-td>
         </q-tr>
       </template>
     </q-table>
-    <div class="btn-container">
-      <div class="text-center cont-shop q-mt-sm" @click="goHome">
-        Return to Catalog
-      </div>
-      <div class="ship-to q-mt-lg">
-        Shipping to:
-        <div>
-          {{ this.order_items[0].shipping_address }}
-          {{ this.order_items[0].shipping_address_2 }}
-        </div>
-        <div>
-          {{ this.order_items[0].shipping_city }},
-          {{ this.order_items[0].shipping_state }}
-          {{ this.order_items[0].shipping_zip }}
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <style scoped>
 .desktop {
-  width: 700px;
+  width: 1200px;
 }
 
 .btn-container {
@@ -121,9 +95,10 @@
 <script>
 import { defineComponent } from "vue";
 import { ref } from "vue";
+import { date } from "quasar";
 
 export default defineComponent({
-  name: "viewOrder",
+  name: "myOrders",
   async setup() {
     const axios = require("axios");
     let baseUrl = "";
@@ -132,9 +107,10 @@ export default defineComponent({
     } else {
       baseUrl = window.location.origin;
     }
-    const orderId = /[^/]*$/.exec(window.location.href)[0];
 
-    const items = await axios.get(baseUrl + "/orders/order/" + orderId);
+    const items = await axios.get(baseUrl + "/orders/my", {
+      withCredentials: true,
+    });
     console.log(items.data);
     return {
       order_items: ref(items.data),
@@ -145,34 +121,48 @@ export default defineComponent({
     return {
       columns: [
         {
-          name: "product",
+          name: "order",
           required: true,
-          label: "Product",
+          label: "Order Number",
           align: "left",
-          field: "product_name",
+          field: "order_id",
           format: (val) => `${val}`,
           sortable: true,
         },
         {
-          name: "size",
+          name: "date_placed",
           align: "left",
-          label: "Size",
-          field: "size_name",
-        },
-        { name: "style", align: "left", label: "Style", field: "desc" },
-        { name: "color", align: "left", label: "Color", field: "color_name" },
-        {
-          name: "price",
-          align: "left",
-          label: "Price",
-          field: "sale_price",
-          format: (val) => "$" + val,
+          label: "Date Placed",
+          field: "createdat",
+          format: (val) => date.formatDate(val, "MM-DD-YYYY"),
         },
         {
-          name: "quantity",
+          name: "shipping_cost",
           align: "left",
-          label: "Quantity",
-          field: "quantity",
+          label: "Shipping Cost",
+          field: "shipping_cost",
+          format: (val) => "$" + (val / 100).toFixed(2),
+        },
+        {
+          name: "total_cost",
+          align: "left",
+          label: "Total Cost",
+          field: (row) =>
+            "$" +
+            (parseFloat(row.item_cost) + row.shipping_cost / 100).toFixed(2),
+        },
+        {
+          name: "order_status",
+          align: "left",
+          label: "Order Status",
+          field: "order_status",
+          format: (val) => val,
+        },
+        {
+          name: "details",
+          align: "left",
+          label: "View More",
+          field: () => "Click to View Order Details",
         },
       ],
     };
@@ -188,26 +178,7 @@ export default defineComponent({
       this.mobile = false;
     }
   },
-  methods: {
-    goHome() {
-      this.$router.push({ name: "home" });
-    },
-  },
-  computed: {
-    getTotalPrice() {
-      if (this.order_items.length == 1) {
-        return (
-          parseFloat(this.order_items[0].sale_price) +
-          this.order_items[0].shipping_cost / 100
-        ).toFixed(2);
-      }
-      return (
-        this.order_items.reduce(
-          (a, b) => parseFloat(a.sale_price) + parseFloat(b.sale_price)
-        ) +
-        this.order_items[0].shipping_cost / 100
-      ).toFixed(2);
-    },
-  },
+  methods: {},
+  computed: {},
 });
 </script>
