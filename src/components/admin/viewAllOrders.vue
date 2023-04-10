@@ -1,124 +1,113 @@
 <template>
-  <div class="q-pa-md cart-container">
+  <div class="q-pa-md">
     <q-table
-      title="My Previous Orders"
-      :rows="order_items"
-      :columns="columns"
-      bordered
-      row-key="name"
       dark
-      :title-class="{ 'text-h4 text-white': this.mobile }"
-      grid
-      class="desktop"
-      card-container-class="cart-table"
-      card-class="card"
+      style="width: 1250px"
+      title="All Orders"
+      :rows="orders"
+      :columns="columns"
+      row-key="name"
+      separator="cell"
+      :pagination="initialPagination"
+      rounded
+      no-data-label="No Orders"
       @row-click="goToOrder"
-    >
-      <template v-slot:no-data>
-        <q-tr class="empty" @click="goHome">
-          <q-td colspan="100%">
-            You don't have any orders! Check out our catalog.
-          </q-td>
-        </q-tr>
-      </template>
-    </q-table>
+    />
   </div>
 </template>
 
 <style scoped>
-.desktop {
-  width: 1200px;
-}
-
-.btn-container {
+.fullContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  align-content: center;
 }
-
-.checkout {
-  margin-top: 15px;
-  width: 200px;
-  cursor: pointer;
-  transition: 0.5s;
-  display: inline-block;
-  position: relative;
-}
-
-.checkout:after {
-  content: " >>";
+.desc {
+  border: 1px red solid;
+  border-radius: 15px;
+  padding: 15px;
+  width: 25rem;
+  font-size: 1.01rem;
   color: white;
-  opacity: 0;
-  transition: 0.5s;
 }
 
-.checkout:hover {
-  padding-right: 14px;
-  padding-left: 4px;
-}
-
-.checkout:hover:after {
-  opacity: 1;
-  right: 5px;
-}
-
-.cont-shop {
-  cursor: pointer;
-}
-
-.empty {
-  cursor: pointer;
-}
-.cart-table {
+.images {
+  flex-direction: row;
   display: flex;
-  flex-direction: column;
-  width: 600px;
-  align-items: center;
-  justify-content: center;
+  gap: 15px;
 }
 
-@media only screen and (max-width: 812px) {
-  .desktop {
-    width: 350px;
+.image {
+  width: 350px;
+  cursor: pointer;
+}
+
+.editIcon {
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 600px) {
+  .desc {
+    width: 18rem;
+    font-size: 1.02rem;
   }
-  .empty {
+
+  .images {
+    flex-direction: column;
     display: flex;
-    margin: auto;
-    font-size: 1rem;
+    gap: 15px;
   }
-  .total-price {
-    font-size: 1.5rem;
+
+  .image {
+    width: 325px;
   }
 }
 </style>
 
 <script>
-import { defineComponent } from "vue";
 import { ref } from "vue";
 import { date } from "quasar";
 
-export default defineComponent({
-  name: "myOrders",
+export default {
   async setup() {
     const axios = require("axios");
+
     let baseUrl = "";
     if (window.location.href.includes("localhost")) {
       baseUrl = "http://localhost:5000";
     } else {
       baseUrl = window.location.origin;
     }
+    let isAdmin = null;
+    let orders = null;
 
-    const items = await axios.get(baseUrl + "/orders/my", {
-      withCredentials: true,
-    });
+    try {
+      isAdmin = await axios.get(baseUrl + "/admin/isAdmin", {
+        withCredentials: true,
+      });
+      orders = await axios.get(baseUrl + "/orders/all", {
+        withCredentials: true,
+      });
+    } catch (err) {
+      router.push({ name: "login" });
+    }
+    console.log(orders);
     return {
-      order_items: ref(items.data),
-      mobile: ref(false),
+      isAdmin: ref(isAdmin),
+      baseUrl: ref(baseUrl),
+      orders: ref(orders.data),
+      initialPagination: {
+        descending: false,
+        page: 1,
+        rowsPerPage: 25,
+      },
     };
   },
   data() {
     return {
+      selectedRow: "",
       columns: [
         {
           name: "order",
@@ -167,17 +156,6 @@ export default defineComponent({
       ],
     };
   },
-  mounted() {
-    if (
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      )
-    ) {
-      this.mobile = true;
-    } else {
-      this.mobile = false;
-    }
-  },
   methods: {
     goToOrder(evt, row) {
       this.$router.push({
@@ -186,6 +164,5 @@ export default defineComponent({
       });
     },
   },
-  computed: {},
-});
+};
 </script>

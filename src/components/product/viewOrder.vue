@@ -36,6 +36,7 @@
       </div>
       <div class="ship-to q-mt-lg">
         Shipping to:
+        {{ this.order_items[0].ship_to }}
         <div>
           {{ this.order_items[0].shipping_address }}
           {{ this.order_items[0].shipping_address_2 }}
