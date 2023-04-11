@@ -204,10 +204,11 @@ export default defineComponent({
       }
       return (
         this.order_items.reduce(
-          (a, b) => parseFloat(a.sale_price) + parseFloat(b.sale_price)
+          (sum, item) => sum + parseFloat(item.sale_price) * item.quantity,
+          0
         ) +
         this.order_items[0].shipping_cost / 100
-      ).toFixed(2);
+      );
     },
   },
 });

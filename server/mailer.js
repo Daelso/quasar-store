@@ -583,6 +583,17 @@ const sendContactForm = (content) => {
 };
 
 const invoiceEmail = (target, name, order, shippingCost, cart) => {
+  const formattedShipping = (shippingCost / 100).toFixed(2);
+
+  const salesSum = cart.reduce(
+    (sum, item) => sum + parseFloat(item.sale_price) * item.quantity,
+    0
+  );
+
+  const totalSum = (
+    parseFloat(salesSum) + parseFloat(formattedShipping)
+  ).toFixed(2);
+
   const emailTemplateSource = fs.readFileSync(
     path.join(__dirname, "./mail_templates/order.hbs"),
     "utf8"
@@ -593,7 +604,8 @@ const invoiceEmail = (target, name, order, shippingCost, cart) => {
   const htmlToSend = template({
     name: name,
     item: cart,
-    shipping: (shippingCost / 100).toFixed(2),
+    shipping: formattedShipping,
+    total: totalSum,
   });
   try {
     let transporter = nodemailer.createTransport({
