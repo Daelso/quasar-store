@@ -1,4 +1,10 @@
 const nodemailer = require("nodemailer");
+const handlebars = require("handlebars");
+const fs = require("fs");
+const path = require("path");
+const helpers = require("handlebars-helpers");
+const math = helpers.math();
+const toFixed = helpers.number();
 
 const sendResetEmail = (target, username, resetLink) => {
   try {
@@ -165,7 +171,7 @@ const sendResetEmail = (target, username, resetLink) => {
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
                     <tr>
                       <td class="content-block" style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; color: #999999; font-size: 12px; text-align: center;" valign="top" align="center">
-                        <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;"> If you didn't ask to reset your password, or you are a hunter, you can disregard this email.</span>
+                        <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;"> If you didn't ask to reset your password please disregard this email.</span>
                         <br> This email is automated - DO NOT RESPOND
                       </td>
                     </tr>
@@ -326,7 +332,7 @@ const sendActivationEmail = (target, username, activationLink) => {
                         <tr>
                           <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">
                             <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Good evening ${username},</p>
-                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Please use this link to activate your account and enter the SchreckNet Database (Inquisition free - we swear)</p>
+                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">Please use this link to activate your account and be amongst the first to know whenever we drop new merch!</p>
                             <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; box-sizing: border-box; width: 100%;" width="100%">
                               <tbody>
                                 <tr>
@@ -358,7 +364,7 @@ const sendActivationEmail = (target, username, activationLink) => {
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
                     <tr>
                       <td class="content-block" style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; color: #999999; font-size: 12px; text-align: center;" valign="top" align="center">
-                        <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;"> If you didn't expect this email, or you are a hunter, please disregard.</span>
+                        <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;"> If you didn't expect this email please disregard.</span>
                         <br> This email is automated - DO NOT RESPOND
                       </td>
                     </tr>
@@ -400,9 +406,9 @@ const sendContactForm = (content) => {
     transporter.verify().then(console.log).catch(console.error);
 
     let mailOptions = {
-      from: `SchreckNet <${process.env.MAILER_USER}>`,
+      from: `Shop Contact Sheet <${process.env.MAILER_USER}>`,
       to: process.env.OWNER_EMAIL,
-      subject: `Elysium Contact Form: ${content.reason}`,
+      subject: `Contact Form: ${content.reason}`,
       html: `<html>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -502,7 +508,7 @@ const sendContactForm = (content) => {
     </style>
       </head>
       <body style="background-color: #f6f6f6; font-family: sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
-        <span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">*Encrypted SchreckNet correspondence*</span>
+        <span class="preheader" style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">Contact Form Info</span>
         <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #f6f6f6; width: 100%;" width="100%" bgcolor="#f6f6f6">
           <tr>
             <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;" valign="top">&nbsp;</td>
@@ -549,7 +555,7 @@ const sendContactForm = (content) => {
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
                     <tr>
                       <td class="content-block" style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; color: #999999; font-size: 12px; text-align: center;" valign="top" align="center">
-                        <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;"> If you didn't ask to reset your password, or you are a hunter, you can disregard this email.</span>
+                        <span class="apple-link" style="color: #999999; font-size: 12px; text-align: center;"> If you didn't ask to reset your password you can disregard this email.</span>
                         <br> This email is automated - DO NOT RESPOND
                       </td>
                     </tr>
@@ -576,4 +582,52 @@ const sendContactForm = (content) => {
   }
 };
 
-module.exports = { sendResetEmail, sendActivationEmail, sendContactForm };
+const invoiceEmail = (target, name, order, shippingCost, cart) => {
+  const emailTemplateSource = fs.readFileSync(
+    path.join(__dirname, "./mail_templates/order.hbs"),
+    "utf8"
+  );
+
+  const template = handlebars.compile(emailTemplateSource);
+
+  const htmlToSend = template({
+    name: name,
+    item: cart,
+    shipping: (shippingCost / 100).toFixed(2),
+  });
+  try {
+    let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      auth: {
+        user: process.env.MAILER_USER,
+        pass: process.env.MAILER_PASSWORD,
+      },
+    });
+
+    transporter.verify().then(console.log).catch(console.error);
+
+    let mailOptions = {
+      from: `SchreckNet <${process.env.MAILER_USER}>`,
+      to: target,
+      subject: `Elysium Order Confirmation - Order #${order}`,
+      html: htmlToSend,
+    };
+
+    transporter.sendMail(mailOptions, function (err, succ) {
+      if (err) {
+        return;
+      }
+    });
+    console.log("Email sent!");
+  } catch (err) {
+    return;
+  }
+};
+
+module.exports = {
+  sendResetEmail,
+  sendActivationEmail,
+  sendContactForm,
+  invoiceEmail,
+};
