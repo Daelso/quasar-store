@@ -11,6 +11,7 @@ const Customer_Emails = require("../models/Customer_Emails");
 const Orders = require("../models/Orders");
 const Order_Items = require("../models/Order_Items");
 const Products = require("../models/Products");
+const { invoiceEmail } = require("../mailer");
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 //Route is base/stripe/
@@ -117,6 +118,14 @@ router.route("/handleSuccess").post(async (req, res) => {
           updatedAt: Date.now(),
         });
       });
+
+      await invoiceEmail(
+        email,
+        name,
+        order.dataValues.order_id,
+        amount_total,
+        shoppingCart
+      );
 
       res
         .status(200)

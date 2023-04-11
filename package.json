@@ -29,6 +29,8 @@
     "express-rate-limit": "^6.6.0",
     "formidable": "^2.1.1",
     "fs": "^0.0.1-security",
+    "handlebars": "^4.7.7",
+    "handlebars-helpers": "^0.10.0",
     "helmet": "^6.0.0",
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^2.3.3",
